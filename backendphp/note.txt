@@ -2,6 +2,7 @@ mail ko lagi
 https://getcomposer.org composer download ko lagi
 cd path/to/your/project
 composer require phpmailer/phpmailer
+vendor folder extract hunxa
  aafai file dinxa 
 
 1. PHPMailer Overview
