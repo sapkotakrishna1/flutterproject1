@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'home.dart'; // Import your Home page
+import 'home.dart';
 
 class OtpInputPage extends StatefulWidget {
   final String email;
+  final String username; // Add username parameter
 
-  const OtpInputPage({Key? key, required this.email}) : super(key: key);
+  const OtpInputPage({Key? key, required this.email, required this.username})
+      : super(key: key);
 
   @override
   _OtpInputPageState createState() => _OtpInputPageState();
@@ -41,10 +43,13 @@ class _OtpInputPageState extends State<OtpInputPage> {
         SnackBar(content: Text(responseData['message'])),
       );
 
-      if (response.statusCode == 200 &&
-          responseData['message'] == 'OTP verified successfully.') {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => HomePage()));
+      if (response.statusCode == 200 && responseData['success'] == true) {
+        // Navigate to home page after successful OTP verification
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => HomePage(
+            username: widget.username, // Pass the username to HomePage
+          ),
+        ));
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -60,10 +65,10 @@ class _OtpInputPageState extends State<OtpInputPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Padding(
-          padding: EdgeInsets.only(top: 25), // Adjust top padding
+          padding: EdgeInsets.only(top: 25),
           child: Text(
-            'Enter Otp', // Change title
-            style: TextStyle(fontSize: 24), // Adjust font size
+            'Enter OTP',
+            style: TextStyle(fontSize: 24),
           ),
         ),
         centerTitle: true,
@@ -102,14 +107,13 @@ class _OtpInputPageState extends State<OtpInputPage> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _verifyOtp,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-                          255, 158, 144, 184), // Button color
+                      backgroundColor: const Color.fromARGB(255, 158, 144, 184),
                       padding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 24),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      elevation: 5, // Add shadow for better depth
+                      elevation: 5,
                     ),
                     child: _isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
@@ -117,8 +121,8 @@ class _OtpInputPageState extends State<OtpInputPage> {
                             'Verify OTP',
                             style: TextStyle(
                               fontSize: 16,
-                              fontWeight: FontWeight.bold, // Make text bold
-                              color: Colors.white, // Text color
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                   ),

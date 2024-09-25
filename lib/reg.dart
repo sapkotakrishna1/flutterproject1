@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:myapp/login.dart';
@@ -19,12 +20,17 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _selectedGender;
 
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false; // Loading state
 
   final List<String> faculties = ['BEIT', 'Civil'];
   final List<String> genders = ['Male', 'Female'];
 
   Future<void> _register() async {
     if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true; // Set loading to true
+      });
+
       final response = await http.post(
         Uri.parse('http://192.168.1.79/myapp_api/register.php'),
         headers: <String, String>{
@@ -40,21 +46,33 @@ class _RegisterPageState extends State<RegisterPage> {
         },
       );
 
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Thank you for registering!')),
-        );
+      setState(() {
+        _isLoading = false; // Reset loading state after response
+      });
 
-        _usernameController.clear();
-        _emailController.clear();
-        _contactController.clear();
-        _passwordController.clear();
-        setState(() {
-          _selectedFaculty = null;
-          _selectedGender = null;
-        });
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => LoginPage()));
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        if (responseBody['message'] ==
+            'This email is already associated with an account.') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(responseBody['message'])),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Thank you for registering!')),
+          );
+
+          _usernameController.clear();
+          _emailController.clear();
+          _contactController.clear();
+          _passwordController.clear();
+          setState(() {
+            _selectedFaculty = null;
+            _selectedGender = null;
+          });
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => LoginPage()));
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to register: ${response.body}')),
@@ -244,7 +262,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: _register,
+                    onPressed: _isLoading
+                        ? null
+                        : _register, // Disable button if loading
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 12),
@@ -254,10 +274,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       backgroundColor: const Color.fromARGB(
                           255, 146, 137, 161), // Button color
                     ),
-                    child: const Text(
-                      'Register',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    child: _isLoading // Show loading indicator
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            'Register',
+                            style: TextStyle(fontSize: 16),
+                          ),
                   ),
                 ],
               ),

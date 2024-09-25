@@ -1,0 +1,125 @@
+mail ko lagi
+https://getcomposer.org composer download ko lagi
+cd path/to/your/project
+composer require phpmailer/phpmailer
+ aafai file dinxa 
+
+1. PHPMailer Overview
+PHPMailer is a popular library in PHP for sending emails using SMTP. It allows you to send HTML emails, attach files, and handle errors effectively.
+
+2. Key Components of the Code
+a. Including PHPMailer
+php
+Copy code
+require 'vendor/autoload.php'; // Load the PHPMailer library
+This line ensures that the PHPMailer library is available to use in your script.
+b. Using Namespaces
+php
+Copy code
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+These lines import the PHPMailer and Exception classes, making them accessible in your code.
+c. Function to Send Email
+The function sendConfirmationEmail($email, $username) is defined to encapsulate the logic for sending an email.
+
+3. SMTP Server Configuration
+Inside the function, you configure the SMTP settings:
+
+php
+Copy code
+$mail->isSMTP(); // Use SMTP
+$mail->Host = 'smtp.gmail.com'; // Set the SMTP server to Gmail
+$mail->SMTPAuth = true; // Enable SMTP authentication
+$mail->Username = 'your_email@gmail.com'; // Your email address
+$mail->Password = 'your_app_password'; // Your App Password
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Use TLS encryption
+$mail->Port = 587; // TCP port for TLS
+SMTP Host: This is the server you connect to for sending emails. For Gmail, it’s smtp.gmail.com.
+Username/Password: These are your login credentials for the SMTP server.
+Encryption: This specifies how the connection is secured. TLS is commonly used.
+Port: This is the communication endpoint for the SMTP server (587 for TLS).
+4. Setting Up the Email Content
+php
+Copy code
+$mail->setFrom('no-reply@yourdomain.com', 'Your Company Name'); // Sender's address
+$mail->addAddress($email, $username); // Recipient's address
+$mail->isHTML(true); // Set email format to HTML
+$mail->Subject = 'Registration Confirmation'; // Email subject
+$mail->Body = 'Thank you for registering, ' . htmlspecialchars($username) . '!<br>Best regards,<br>Your Company Name'; // Email body
+From/To Addresses: You specify who the email is from and to whom it’s being sent.
+Subject & Body: These define the content of the email. The body can be plain text or HTML.
+5. Sending the Email
+php
+Copy code
+$mail->send();
+This line attempts to send the email. If it succeeds, the function returns true.
+6. Error Handling
+php
+Copy code
+catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+}
+If sending fails, this catch block will output an error message with specific details about what went wrong.
+7. Executing the Function
+php
+Copy code
+if (sendConfirmationEmail($email, $username)) {
+    echo "Email sent successfully!";
+} else {
+    echo "Failed to send email.";
+}
+This part of the code calls the function with the recipient's email and username, and it checks if the email was sent successfully.
+Summary
+PHPMailer is a powerful library that simplifies sending emails via SMTP.
+You configure the SMTP settings with your email provider’s details.
+The email content is defined clearly with from/to addresses, subject, and body.
+Error handling is crucial to diagnose any issues that arise.
+Feel free to ask if you have more questions or if there's a specific part you'd like me to explain further!
+
+
+
+
+CREATE TABLE users (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL PRIMARY KEY UNIQUE,
+    faculty VARCHAR(50),
+    gender VARCHAR(10),
+    contact VARCHAR(15),
+    password VARCHAR(255) NOT NULL,
+    otp INT(6),
+    otp_created_at DATETIME DEFAULT NULL
+);
+
+
+CREATE TABLE users (
+    id INT(11) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    faculty VARCHAR(50),
+    gender VARCHAR(10),
+    contact VARCHAR(15),
+    password VARCHAR(255) NOT NULL,
+    otp INT(6),
+    otp_created_at DATETIME DEFAULT NULL,
+    PRIMARY KEY (id, email)
+);
+
+
+CREATE TABLE objects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    image BLOB NOT NULL,
+    price DECIMAL(10, 2),
+    age INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Add timestamp column
+);
+
+
+
+
+
+
+

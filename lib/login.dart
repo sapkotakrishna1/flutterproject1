@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'reg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'home.dart';
 import 'otpinput.dart';
+import 'reg.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -16,6 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -31,22 +40,42 @@ class _LoginPageState extends State<LoginPage> {
           }),
         );
 
-        if (response.statusCode == 200) {
-          final responseData = json.decode(response.body);
-          _showSnackBar(responseData['message']);
+        final responseData = json.decode(response.body);
+        print('Response: $responseData'); // Debug statement
 
-          // Check if OTP was generated successfully
-          if (responseData['message'] ==
-              'OTP generated and sent successfully.') {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) =>
-                    OtpInputPage(email: _usernameController.text),
-              ),
-            );
+        if (response.statusCode == 200) {
+          String username = responseData['username'] ?? '';
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('email', _usernameController.text);
+          await prefs.setString('username', username);
+
+          _showSnackBar(responseData['message'] ?? 'Success');
+
+          // Check for redirection
+          if (responseData['success'] == true) {
+            if (responseData['redirect'] == 'home.php') {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => HomePage(username: username),
+                ),
+              );
+            } else if (responseData['message'].contains('OTP generated') ||
+                responseData['message'].contains('An OTP is already sent')) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => OtpInputPage(
+                    email: _usernameController.text,
+                    username: username, // Pass username here
+                  ),
+                ),
+              );
+            }
+          } else {
+            _showSnackBar(
+                'Error: ${responseData['message'] ?? 'Server error'}');
           }
         } else {
-          _showSnackBar('Server error: ${response.statusCode}');
+          _showSnackBar('Error: ${responseData['message'] ?? 'Server error'}');
         }
       } catch (error) {
         _showSnackBar('An error occurred: $error');
@@ -57,8 +86,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: const Duration(seconds: 3)),
+    );
   }
 
   void _navigateToRegister() {
@@ -71,13 +101,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Padding(
-          padding: EdgeInsets.only(top: 25), // Adjust top padding
-          child: Text(
-            'Login', // Change title
-            style: TextStyle(fontSize: 24), // Adjust font size
-          ),
-        ),
+        automaticallyImplyLeading: false,
+        title: const Text('Login', style: TextStyle(fontSize: 24)),
         centerTitle: true,
       ),
       body: Padding(
@@ -86,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(height: 50), // Space from the top
+              const SizedBox(height: 50),
               Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
@@ -103,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                           controller: _usernameController,
                           decoration: InputDecoration(
                             labelText: 'Email',
-                            prefixIcon: Icon(Icons.email),
+                            prefixIcon: const Icon(Icons.email),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -117,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                           controller: _passwordController,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            prefixIcon: Icon(Icons.lock),
+                            prefixIcon: const Icon(Icons.lock),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -145,10 +170,8 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 16),
                         TextButton(
                           onPressed: _navigateToRegister,
-                          child: const Text(
-                            'New here? Register',
-                            style: TextStyle(color: Colors.blue),
-                          ),
+                          child: const Text('New here? Register',
+                              style: TextStyle(color: Colors.blue)),
                         ),
                       ],
                     ),
