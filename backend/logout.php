@@ -27,4 +27,7 @@ echo json_encode([
     "success" => true,
     "message" => "Logged out successfully."
 ]);
+
+// Always exit the script to prevent further output
+exit();
 ?>

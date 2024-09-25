@@ -4,9 +4,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Start the session
-session_start();
-
 // Set headers for JSON response
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -16,48 +13,12 @@ header('Access-Control-Allow-Headers: Content-Type');
 // Include database connection
 include 'dbconnection.php';
 
-// Function to get username from the session
-function getUsername($conn) {
-    if (isset($_SESSION['email'])) {
-        $email = $_SESSION['email'];
-
-        $stmt = $conn->prepare("SELECT username FROM users WHERE email = ?");
-        if ($stmt) {
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result && $result->num_rows === 1) {
-                $username = $result->fetch_assoc()['username'];
-                $stmt->close();
-                return $username;
-            } else {
-                error_log('No user found for email: ' . $email);
-            }
-            $stmt->close();
-        } else {
-            error_log('Prepared statement failed: ' . $conn->error);
-        }
-    } else {
-        error_log('No email found in session.');
-    }
-    return null; // User not found
-}
-
 // Check request method
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check database connection
     if ($conn->connect_error) {
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => 'Database connection failed.']);
-        exit();
-    }
-
-    // Get the username
-    $username = getUsername($conn);
-    if (!$username) {
-        http_response_code(401);
-        echo json_encode(['status' => 'error', 'message' => 'Authentication required. Please log in to continue.']);
         exit();
     }
 
@@ -83,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $responses = [];
-    $stmt = $conn->prepare("INSERT INTO objects (image, name, description, price, age, username) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO objects (image, name, description, price, age) VALUES (?, ?, ?, ?, ?)");
     if (!$stmt) {
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => 'Database statement preparation failed.']);
@@ -113,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Move the uploaded file to the target directory
             if (move_uploaded_file($_FILES['images']['tmp_name'][$index], $targetFile)) {
                 // Bind parameters and execute
-                $stmt->bind_param("ssdiss", $targetFile, $name, $description, $price, $age, $username);
+                $stmt->bind_param("ssdis", $targetFile, $name, $description, $price, $age);
                 if ($stmt->execute()) {
                     $responses[] = ['status' => 'success', 'message' => 'Uploaded: ' . $filename];
                 } else {
