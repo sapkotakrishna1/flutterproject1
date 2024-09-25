@@ -5,9 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 import 'otpinput.dart';
 import 'reg.dart';
+import 'profile.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -45,35 +46,20 @@ class _LoginPageState extends State<LoginPage> {
 
         if (response.statusCode == 200) {
           String username = responseData['username'] ?? '';
+          String email = _usernameController.text;
+          String userId =
+              responseData['userId'] ?? ''; // Capture user ID from response
+
+          // Store in SharedPreferences
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('email', _usernameController.text);
+          await prefs.setString('email', email);
           await prefs.setString('username', username);
+          await prefs.setString('userId', userId); // Store user ID
 
           _showSnackBar(responseData['message'] ?? 'Success');
 
-          // Check for redirection
-          if (responseData['success'] == true) {
-            if (responseData['redirect'] == 'home.php') {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => HomePage(username: username),
-                ),
-              );
-            } else if (responseData['message'].contains('OTP generated') ||
-                responseData['message'].contains('An OTP is already sent')) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => OtpInputPage(
-                    email: _usernameController.text,
-                    username: username, // Pass username here
-                  ),
-                ),
-              );
-            }
-          } else {
-            _showSnackBar(
-                'Error: ${responseData['message'] ?? 'Server error'}');
-          }
+          // Navigate based on response
+          _handleNavigation(responseData, username, email, userId);
         } else {
           _showSnackBar('Error: ${responseData['message'] ?? 'Server error'}');
         }
@@ -82,6 +68,39 @@ class _LoginPageState extends State<LoginPage> {
       } finally {
         setState(() => _isLoading = false);
       }
+    }
+  }
+
+  void _handleNavigation(Map<String, dynamic> responseData, String username,
+      String email, String userId) {
+    if (responseData['success'] == true) {
+      if (responseData['redirect'] == 'home.php') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) =>
+                HomePage(username: username, email: email, userId: userId),
+          ),
+        );
+      } else if (responseData['message'].contains('OTP generated') ||
+          responseData['message'].contains('An OTP is already sent')) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => OtpInputPage(
+              email: email,
+              username: username,
+              userId: '',
+            ),
+          ),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => ProfilePage(userName: username, email: email),
+          ),
+        );
+      }
+    } else {
+      _showSnackBar('Error: ${responseData['message'] ?? 'Server error'}');
     }
   }
 

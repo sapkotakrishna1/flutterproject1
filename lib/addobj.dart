@@ -3,9 +3,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:html' as html;
 import 'dart:typed_data';
+import 'package:flutter/services.dart'; // Import for TextInputFormatter
 
 class AddObjPage extends StatefulWidget {
-  const AddObjPage({Key? key}) : super(key: key);
+  final String username;
+
+  const AddObjPage({Key? key, required this.username}) : super(key: key);
 
   @override
   _AddObjPageState createState() => _AddObjPageState();
@@ -19,8 +22,13 @@ class _AddObjPageState extends State<AddObjPage> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
 
-  // Set your username directly here
-  String _username = 'default_username';
+  late String _username;
+
+  @override
+  void initState() {
+    super.initState();
+    _username = widget.username;
+  }
 
   Future<void> _pickImages() async {
     final fileInput = html.FileUploadInputElement();
@@ -67,8 +75,8 @@ class _AddObjPageState extends State<AddObjPage> {
     final price = double.tryParse(_priceController.text);
     final age = int.tryParse(_ageController.text);
 
-    if (price == null || age == null) {
-      _showSnackBar('Price must be a valid number and Age must be an integer.');
+    if (price == null) {
+      _showSnackBar('Price must be a valid number.');
       return;
     }
 
@@ -85,7 +93,7 @@ class _AddObjPageState extends State<AddObjPage> {
     request.fields['description'] = _descriptionController.text;
     request.fields['price'] = price.toString();
     request.fields['age'] = age.toString();
-    request.fields['username'] = _username; // Use the default username
+    request.fields['username'] = _username;
 
     for (int i = 0; i < _imageBytesList.length; i++) {
       request.files.add(http.MultipartFile.fromBytes(
@@ -105,6 +113,7 @@ class _AddObjPageState extends State<AddObjPage> {
           _showSnackBar(item['message']);
         }
         _clearFields();
+        Navigator.pop(context);
       } else {
         _showSnackBar('Error: ${response.statusCode} - ${responseData.body}');
       }
@@ -158,12 +167,18 @@ class _AddObjPageState extends State<AddObjPage> {
               TextField(
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Name'),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))
+                ],
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 1,
+                maxLines: 2,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))
+                ],
               ),
               const SizedBox(height: 8),
               TextField(

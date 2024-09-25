@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
-import 'profile.dart'; // Import the ProfilePage
-import 'addobj.dart'; // Import the AddObjPage
-import 'addcart.dart'; // Import the AddCartPage
-import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
+import 'package:myapp/buy.dart';
+import 'profile.dart';
+import 'addobj.dart';
+import 'addcart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required String username});
+  final String username;
+  final String email;
+  final String userId;
+
+  const HomePage({
+    Key? key,
+    required this.username,
+    required this.email,
+    required this.userId,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -13,33 +25,62 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0; // Track the selected index
-  String userName = ''; // To store the fetched username
-  bool _isLoading = true; // Track loading state
+  String userName = ''; // Store the fetched username
+  List<dynamic> posts = []; // List to store posts
+  bool isLoading = true; // Track loading state
 
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // Load user data when the widget initializes
+    _loadUserData(); // Load user data on initialization
+    _fetchPosts(); // Fetch posts from API
   }
 
+  // Load user data from SharedPreferences
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     userName = prefs.getString('username') ?? 'User'; // Default to 'User'
-    setState(() {
-      _isLoading = false; // Update loading state
-    });
+    setState(() {});
   }
 
+  // Fetch posts from the API
+  Future<void> _fetchPosts() async {
+    setState(() {
+      isLoading = true; // Set loading state
+    });
+    try {
+      final response =
+          await http.get(Uri.parse('http://192.168.1.79/myapp_api/post.php'));
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = json.decode(response.body);
+        setState(() {
+          posts = jsonResponse; // Store fetched posts
+          isLoading = false; // Update loading state
+        });
+      } else {
+        setState(() {
+          isLoading = false; // Update loading state on error
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false; // Update loading state on error
+      });
+    }
+  }
+
+  // Handle bottom navigation item taps
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index; // Update the selected index
+      _selectedIndex = index; // Update selected index
     });
-
-    // Navigate to the appropriate page based on the selected index
-    if (index == 1) {
+    if (index == 0) {
+      _fetchPosts(); // Refresh posts for Home
+    } else if (index == 1) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const AddObjPage()),
+        MaterialPageRoute(
+            builder: (context) => AddObjPage(username: widget.username)),
       );
     } else if (index == 2) {
       Navigator.push(
@@ -51,27 +92,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-            child: CircularProgressIndicator()), // Show loading indicator
-      );
-    }
-
     final hour = DateTime.now().hour;
-    String greeting;
-
-    // Determine the greeting based on the time of day
-    if (hour < 12) {
-      greeting = 'Good Morning, $userName!';
-    } else if (hour < 17) {
-      greeting = 'Good Afternoon, $userName!';
-    } else {
-      greeting = 'Good Evening, $userName!';
-    }
-
-    const String imageUrl =
-        'https://yourprofileimageurl.com/image.jpg'; // Replace with your image URL
+    String greeting = hour < 12
+        ? 'Good Morning, $userName!'
+        : hour < 17
+            ? 'Good Afternoon, $userName!'
+            : 'Good Evening, $userName!';
 
     return Scaffold(
       appBar: AppBar(
@@ -87,39 +113,165 @@ class _HomePageState extends State<HomePage> {
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              IconButton(
-                icon: const Icon(Icons.search),
-                color: Colors.white,
-                onPressed: () {
-                  print("Search tapped!");
-                },
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    color: Colors.white,
+                    onPressed: () {
+                      print("Search tapped!");
+                    },
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfilePage(
+                            userName: widget.username,
+                            email: widget.email,
+                          ),
+                        ),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(
+                          'https://yourprofileimageurl.com/image.jpg'),
+                      child: const Text('User',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ],
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProfilePage()),
-                  );
-                },
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(imageUrl),
-                  child: imageUrl.isEmpty
-                      ? const Text('User',
-                          style: TextStyle(color: Colors.white))
-                      : null,
-                ),
-              ),
-              const SizedBox(width: 5),
             ],
           ),
         ),
       ),
-      body: Center(
-        child: Text(
-          'Welcome to the Home Page! $userName!',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : posts.isEmpty
+                    ? const Center(child: Text('No posts available.'))
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          return Card(
+                            margin: const EdgeInsets.all(8.0),
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // More options button at the top right
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.more_vert),
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      onPressed: () {
+                                        print(
+                                            'More options for ${post['name']}');
+                                      },
+                                    ),
+                                  ),
+                                  // Username
+                                  Text(post['username'],
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          fontStyle: FontStyle.italic)),
+                                  const SizedBox(height: 4),
+                                  // Created at
+                                  Text(post['created_at'],
+                                      style: const TextStyle(
+                                          fontSize: 12, color: Colors.grey)),
+                                  const SizedBox(height: 8),
+                                  // Name
+                                  Text(post['name'],
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 8),
+                                  // Description
+                                  Text(post['description'],
+                                      style: const TextStyle(height: 1.4)),
+                                  const SizedBox(height: 8),
+                                  // Image
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Image.network(
+                                      post['image'],
+                                      height: 150,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Icon(Icons.error);
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  // Price and Age
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Price: \$${post['price']}'),
+                                      Text('Age: ${post['age']} years'),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  // Buy Button and Chat Icon
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BuyPage(post: post)),
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color.fromARGB(
+                                              255, 128, 115, 151),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        child: const Text('Buy'),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.chat),
+                                        color: const Color.fromARGB(
+                                            255, 109, 96, 133),
+                                        onPressed: () {
+                                          print(
+                                              'Chat icon pressed for ${post['name']}');
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

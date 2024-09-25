@@ -5,10 +5,15 @@ import 'home.dart';
 
 class OtpInputPage extends StatefulWidget {
   final String email;
-  final String username; // Add username parameter
+  final String username;
+  final String userId; // Add userId parameter
 
-  const OtpInputPage({Key? key, required this.email, required this.username})
-      : super(key: key);
+  const OtpInputPage({
+    Key? key,
+    required this.email,
+    required this.username,
+    required this.userId, // Initialize userId
+  }) : super(key: key);
 
   @override
   _OtpInputPageState createState() => _OtpInputPageState();
@@ -44,10 +49,12 @@ class _OtpInputPageState extends State<OtpInputPage> {
       );
 
       if (response.statusCode == 200 && responseData['success'] == true) {
-        // Navigate to home page after successful OTP verification
+        // Navigate to HomePage after successful OTP verification
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => HomePage(
             username: widget.username, // Pass the username to HomePage
+            email: widget.email, // Pass the email to HomePage
+            userId: widget.userId, // Pass the userId to HomePage
           ),
         ));
       }
@@ -96,7 +103,7 @@ class _OtpInputPageState extends State<OtpInputPage> {
                     controller: _otpController,
                     decoration: InputDecoration(
                       labelText: 'OTP',
-                      prefixIcon: Icon(Icons.lock),
+                      prefixIcon: const Icon(Icons.lock),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
