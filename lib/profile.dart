@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.79/myapp_api/logout.php'),
+      Uri.parse('http://localhost/myapp_api/logout.php'),
     );
 
     setState(() {

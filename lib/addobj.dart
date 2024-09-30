@@ -86,7 +86,7 @@ class _AddObjPageState extends State<AddObjPage> {
 
     final request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://192.168.1.79/myapp_api/addobj.php'),
+      Uri.parse('http://localhost/myapp_api/addobj.php'),
     );
 
     request.fields['name'] = _nameController.text;

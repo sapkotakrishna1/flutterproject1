@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.1.79/myapp_api/login.php'),
+          Uri.parse('http://localhost/myapp_api/login.php'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({
             "email": _usernameController.text,
@@ -64,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
           _showSnackBar('Error: ${responseData['message'] ?? 'Server error'}');
         }
       } catch (error) {
+        print('Error: $error'); // Log the error for debugging
         _showSnackBar('An error occurred: $error');
       } finally {
         setState(() => _isLoading = false);

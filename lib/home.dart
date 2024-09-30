@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     });
     try {
       final response =
-          await http.get(Uri.parse('http://192.168.1.79/myapp_api/post.php'));
+          await http.get(Uri.parse('http://localhost/myapp_api/post.php'));
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = json.decode(response.body);
         setState(() {
@@ -225,10 +225,12 @@ class _HomePageState extends State<HomePage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('Price: \$${post['price']}'),
+                                      Text(
+                                          'Price: ${post['price']} NPR'), // Changed to NPR
                                       Text('Age: ${post['age']} years'),
                                     ],
                                   ),
+
                                   const SizedBox(height: 8),
                                   // Buy Button and Chat Icon
                                   Row(

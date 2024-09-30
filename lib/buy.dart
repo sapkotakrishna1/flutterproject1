@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'khalti.dart'; // Import the Khalti payment file
+// Import your Esewa payment file if you have one
 
 class BuyPage extends StatelessWidget {
-  final dynamic post; // Hold the post data for the item being bought
+  final dynamic post;
 
   const BuyPage({Key? key, required this.post}) : super(key: key);
 
@@ -20,46 +22,52 @@ class BuyPage extends StatelessWidget {
             // Item Name
             Text(
               post['name'],
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            // Item Price
-            Text(
-              'Price: \$${post['price']}',
-              style: const TextStyle(
-                fontSize: 20,
-                color: Colors.green,
-              ),
+            // Price and Age Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Price: ${post['price']} NPR'),
+                Text('Age: ${post['age']} years'),
+              ],
             ),
             const SizedBox(height: 16),
             // Item Description
             Text(
               'Description:',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             Text(post['description']),
             const SizedBox(height: 16),
-            // Confirm Purchase Button
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Implement your purchase logic here
-                  _showPurchaseConfirmation(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+            // Payment Options
+            Text(
+              'Choose Payment Method:',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            // Payment Method Buttons with Icons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Khalti Button
+                GestureDetector(
+                  onTap: () {
+                    KhaltiPayment.processPayment(context, post);
+                  },
+                  child: _buildPaymentMethod('assets/khalti.png', 'Khalti'),
                 ),
-                child: const Text('Confirm Purchase',
-                    style: TextStyle(fontSize: 18)),
-              ),
+                // Esewa Button
+                GestureDetector(
+                  onTap: () {
+                    // Call your Esewa payment method here
+                    //EsewaPayment.processPayment(context, post);
+                  },
+                  child: _buildPaymentMethod('assets/esewa.png', 'Esewa'),
+                ),
+              ],
             ),
           ],
         ),
@@ -67,24 +75,27 @@ class BuyPage extends StatelessWidget {
     );
   }
 
-  void _showPurchaseConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Purchase Confirmation'),
-          content: const Text('Thank you for your purchase!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Go back to the PostDetailPage
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
+  Widget _buildPaymentMethod(String iconPath, String label) {
+    return Column(
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.orange,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Image.asset(
+            iconPath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const Center(child: Text('Image not found'));
+            },
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(label),
+      ],
     );
   }
 }
