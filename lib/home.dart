@@ -24,29 +24,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0; // Track the selected index
-  String userName = ''; // Store the fetched username
-  List<dynamic> posts = []; // List to store posts
-  bool isLoading = true; // Track loading state
+  int _selectedIndex = 0;
+  String userName = '';
+  List<dynamic> posts = [];
+  bool isLoading = true;
+
+  get baseUrl => null; // Adjust this if needed.
 
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // Load user data on initialization
-    _fetchPosts(); // Fetch posts from API
+    _loadUserData();
+    _fetchPosts();
   }
 
-  // Load user data from SharedPreferences
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    userName = prefs.getString('username') ?? 'User'; // Default to 'User'
+    userName = prefs.getString('username') ?? 'User';
     setState(() {});
   }
 
-  // Fetch posts from the API
   Future<void> _fetchPosts() async {
     setState(() {
-      isLoading = true; // Set loading state
+      isLoading = true;
     });
     try {
       final response =
@@ -54,28 +54,29 @@ class _HomePageState extends State<HomePage> {
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = json.decode(response.body);
         setState(() {
-          posts = jsonResponse; // Store fetched posts
-          isLoading = false; // Update loading state
+          posts = jsonResponse;
+          isLoading = false;
         });
       } else {
+        print('Error: ${response.statusCode}');
         setState(() {
-          isLoading = false; // Update loading state on error
+          isLoading = false;
         });
       }
     } catch (e) {
+      print('Exception: $e');
       setState(() {
-        isLoading = false; // Update loading state on error
+        isLoading = false;
       });
     }
   }
 
-  // Handle bottom navigation item taps
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index; // Update selected index
+      _selectedIndex = index;
     });
     if (index == 0) {
-      _fetchPosts(); // Refresh posts for Home
+      _fetchPosts();
     } else if (index == 1) {
       Navigator.push(
         context,
@@ -101,7 +102,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Remove the back arrow
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.deepPurple,
         title: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -137,8 +138,8 @@ class _HomePageState extends State<HomePage> {
                     child: CircleAvatar(
                       radius: 20,
                       backgroundImage: NetworkImage(
-                          'https://yourprofileimageurl.com/image.jpg'),
-                      child: const Text('User',
+                          'https://yourprofileimageurl.com/image.jpg'), // Replace with actual URL
+                      child: const Text('U',
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),
@@ -152,7 +153,10 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 60.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 : posts.isEmpty
                     ? const Center(child: Text('No posts available.'))
                     : ListView.builder(
@@ -163,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                           final post = posts[index];
                           return Card(
                             margin: const EdgeInsets.all(8.0),
-                            elevation: 4,
+                            elevation: 8,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -172,44 +176,72 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // More options button at the top right
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.more_vert),
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                      onPressed: () {
-                                        print(
-                                            'More options for ${post['name']}');
-                                      },
-                                    ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20,
+                                        backgroundImage: NetworkImage(
+                                          post['user_image'] ??
+                                              'https://via.placeholder.com/150', // Fallback image
+                                        ),
+                                        child: const Text(
+                                          'U',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8), // Spacing
+                                      Expanded(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              post['userName'] ?? userName,
+                                              style: const TextStyle(
+                                                  color: Colors.deepPurple,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.more_vert),
+                                              color: Colors.deepPurple,
+                                              onPressed: () {
+                                                print(
+                                                    'More options for ${post['name']}');
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  // Username
-                                  Text(post['username'],
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          fontStyle: FontStyle.italic)),
                                   const SizedBox(height: 4),
-                                  // Created at
-                                  Text(post['created_at'],
-                                      style: const TextStyle(
-                                          fontSize: 12, color: Colors.grey)),
+                                  Text(
+                                    post['created_at'] ?? 'Date not available',
+                                    style: const TextStyle(
+                                        fontSize: 12, color: Colors.grey),
+                                  ),
                                   const SizedBox(height: 8),
-                                  // Name
-                                  Text(post['name'],
-                                      style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold)),
+                                  Text(
+                                    post['name'] ?? 'Unnamed Product',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                   const SizedBox(height: 8),
-                                  // Description
-                                  Text(post['description'],
-                                      style: const TextStyle(height: 1.4)),
+                                  Text(
+                                    post['description'] ?? 'No description',
+                                    style: const TextStyle(height: 1.4),
+                                  ),
                                   const SizedBox(height: 8),
-                                  // Image
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(8.0),
                                     child: Image.network(
-                                      post['image'],
+                                      post['image'] != null &&
+                                              post['image'].isNotEmpty
+                                          ? '$baseUrl${post['image']}'
+                                          : 'http://localhost/myapp_api/post.php', // Fallback image
                                       height: 150,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
@@ -220,19 +252,15 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  // Price and Age
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                          'Price: ${post['price']} NPR'), // Changed to NPR
+                                      Text('Price: ${post['price']} NPR'),
                                       Text('Age: ${post['age']} years'),
                                     ],
                                   ),
-
                                   const SizedBox(height: 8),
-                                  // Buy Button and Chat Icon
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -247,8 +275,7 @@ class _HomePageState extends State<HomePage> {
                                           );
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 128, 115, 151),
+                                          backgroundColor: Colors.deepPurple,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(8),
@@ -258,8 +285,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       IconButton(
                                         icon: const Icon(Icons.chat),
-                                        color: const Color.fromARGB(
-                                            255, 109, 96, 133),
+                                        color: Colors.deepPurple,
                                         onPressed: () {
                                           print(
                                               'Chat icon pressed for ${post['name']}');
@@ -289,6 +315,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Cart',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
           ),
         ],
         currentIndex: _selectedIndex,

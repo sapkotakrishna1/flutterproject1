@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/khalti.dart';
+//import 'package:myapp/khalti.dart';
 import 'login.dart'; // Import the login.dart file
 import 'reg.dart'; // Import the registration page if you have one
 
 void main() {
-  KhaltiPayment.initKhalti(); // Initialize Khalti here
+  //KhaltiPayment.initKhalti(); // Initialize Khalti here
   runApp(const MyApp());
 }
 

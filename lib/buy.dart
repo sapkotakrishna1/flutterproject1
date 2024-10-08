@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'khalti.dart'; // Import the Khalti payment file
-// Import your Esewa payment file if you have one
 
 class BuyPage extends StatelessWidget {
   final dynamic post;
@@ -9,6 +7,9 @@ class BuyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController nameController =
+        TextEditingController(); // Controller for user's name input
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Confirm Purchase'),
@@ -42,32 +43,39 @@ class BuyPage extends StatelessWidget {
             const SizedBox(height: 4),
             Text(post['description']),
             const SizedBox(height: 16),
+            // User Name Input
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Enter your name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
             // Payment Options
             Text(
               'Choose Payment Method:',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            // Payment Method Buttons with Icons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // Khalti Button
-                GestureDetector(
-                  onTap: () {
-                    KhaltiPayment.processPayment(context, post);
-                  },
-                  child: _buildPaymentMethod('assets/khalti.png', 'Khalti'),
-                ),
-                // Esewa Button
-                GestureDetector(
-                  onTap: () {
-                    // Call your Esewa payment method here
-                    //EsewaPayment.processPayment(context, post);
-                  },
-                  child: _buildPaymentMethod('assets/esewa.png', 'Esewa'),
-                ),
-              ],
+            // Payment Method Button
+            GestureDetector(
+              onTap: () {
+                String userName = nameController.text;
+                double price =
+                    post['price']; // Assuming post['price'] is a double
+                String productName = post['name']; // Get product name
+
+                if (userName.isNotEmpty) {
+                  // Implement your payment processing logic here
+                  _processPayment(context, productName, price, userName);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter your name')),
+                  );
+                }
+              },
+              child: _buildPaymentMethod('assets/khalti.png', 'Khalti'),
             ),
           ],
         ),
@@ -96,6 +104,29 @@ class BuyPage extends StatelessWidget {
         const SizedBox(height: 4),
         Text(label),
       ],
+    );
+  }
+
+  void _processPayment(
+      BuildContext context, String productName, double price, String userName) {
+    // Placeholder for your payment processing logic
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Purchase Confirmation'),
+          content: Text(
+              'Thank you, $userName, for your purchase of $productName at $price NPR!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
