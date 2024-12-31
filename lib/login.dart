@@ -3,9 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
-import 'otpinput.dart';
-import 'reg.dart';
 import 'profile.dart';
+import 'reg.dart';
+import 'forgot_password.dart'; // Import the ForgotPasswordPage
+import 'admin.dart'; // Import the AdminPage
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,6 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  bool _isPasswordVisible = false; // Toggle for password visibility
+  bool _isPasswordEntered = false; // Track if the user started typing password
 
   @override
   void dispose() {
@@ -49,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
           String email = _usernameController.text;
           String userId =
               responseData['userId'] ?? ''; // Capture user ID from response
+          String redirectTo = responseData['redirect'] ?? '';
 
           // Store in SharedPreferences
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -59,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
           _showSnackBar(responseData['message'] ?? 'Success');
 
           // Navigate based on response
-          _handleNavigation(responseData, username, email, userId);
+          _handleNavigation(responseData, username, email, userId, redirectTo);
         } else {
           _showSnackBar('Error: ${responseData['message'] ?? 'Server error'}');
         }
@@ -73,24 +77,21 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleNavigation(Map<String, dynamic> responseData, String username,
-      String email, String userId) {
+      String email, String userId, String redirectTo) {
     if (responseData['success'] == true) {
-      if (responseData['redirect'] == 'home.php') {
+      // Navigate to home or profile page based on response
+      if (redirectTo == 'home.php') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) =>
-                HomePage(username: username, email: email, userId: userId),
+                HomePage(username: username, email: email, id: userId),
           ),
         );
-      } else if (responseData['message'].contains('OTP generated') ||
-          responseData['message'].contains('An OTP is already sent')) {
-        Navigator.of(context).push(
+      } else if (redirectTo == 'admin.php') {
+        // If the user is an admin, redirect to the admin page
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => OtpInputPage(
-              email: email,
-              username: username,
-              userId: '',
-            ),
+            builder: (context) => AdminPage(username: username, email: email),
           ),
         );
       } else {
@@ -114,6 +115,12 @@ class _LoginPageState extends State<LoginPage> {
   void _navigateToRegister() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const RegisterPage()),
+    );
+  }
+
+  void _navigateToForgotPassword() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
     );
   }
 
@@ -160,14 +167,35 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
+                          obscureText: !_isPasswordVisible, // Toggle visibility
+                          onChanged: (text) {
+                            setState(() {
+                              _isPasswordEntered = text
+                                  .isNotEmpty; // Track typing in password field
+                            });
+                          },
                           decoration: InputDecoration(
                             labelText: 'Password',
                             prefixIcon: const Icon(Icons.lock),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+                            suffixIcon: _isPasswordEntered
+                                ? IconButton(
+                                    icon: Icon(
+                                      _isPasswordVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _isPasswordVisible =
+                                            !_isPasswordVisible;
+                                      });
+                                    },
+                                  )
+                                : null,
                           ),
-                          obscureText: true,
                           validator: (value) => value?.isEmpty == true
                               ? 'Please enter a password'
                               : null,
@@ -191,6 +219,13 @@ class _LoginPageState extends State<LoginPage> {
                         TextButton(
                           onPressed: _navigateToRegister,
                           child: const Text('New here? Register',
+                              style: TextStyle(color: Colors.blue)),
+                        ),
+                        const SizedBox(height: 16),
+                        TextButton(
+                          onPressed:
+                              _navigateToForgotPassword, // Forgot Password
+                          child: const Text('Forgot Password?',
                               style: TextStyle(color: Colors.blue)),
                         ),
                       ],

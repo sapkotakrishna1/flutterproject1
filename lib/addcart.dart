@@ -5,8 +5,8 @@ class AddCartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _itemNameController = TextEditingController();
-    int _quantity = 1;
+    final TextEditingController itemNameController = TextEditingController();
+    int quantity = 1;
 
     return Scaffold(
       appBar: AppBar(
@@ -18,7 +18,7 @@ class AddCartPage extends StatelessWidget {
         child: Column(
           children: [
             TextField(
-              controller: _itemNameController,
+              controller: itemNameController,
               decoration: const InputDecoration(
                 labelText: 'Item Name',
                 border: OutlineInputBorder(),
@@ -33,7 +33,7 @@ class AddCartPage extends StatelessWidget {
                   style: TextStyle(fontSize: 16),
                 ),
                 DropdownButton<int>(
-                  value: _quantity,
+                  value: quantity,
                   items: List.generate(10, (index) => index + 1)
                       .map((value) => DropdownMenuItem<int>(
                             value: value,
@@ -42,7 +42,7 @@ class AddCartPage extends StatelessWidget {
                       .toList(),
                   onChanged: (newValue) {
                     if (newValue != null) {
-                      _quantity = newValue;
+                      quantity = newValue;
                     }
                   },
                 ),
@@ -52,13 +52,13 @@ class AddCartPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Handle add to cart action
-                final itemName = _itemNameController.text;
+                final itemName = itemNameController.text;
 
                 // For now, just print to console
-                print('Item Added to Cart: $itemName, Quantity: $_quantity');
+                print('Item Added to Cart: $itemName, Quantity: $quantity');
 
                 // Optionally, clear the fields
-                _itemNameController.clear();
+                itemNameController.clear();
 
                 // Show a Snackbar for confirmation
                 ScaffoldMessenger.of(context).showSnackBar(

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:myapp/login.dart';
+import 'otpinput.dart'; // Import OTP input page
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -15,72 +15,124 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _contactController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _idController = TextEditingController(); // Define id controller
 
-  String? _selectedFaculty;
   String? _selectedGender;
-
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false; // Loading state
+  bool _isPasswordVisible = false; // Password visibility toggle
+  bool _isPasswordFieldEmpty = true; // Track if password field is empty
 
-  final List<String> faculties = ['BEIT', 'Civil'];
-  final List<String> genders = ['Male', 'Female'];
+  final List<String> genders = ['Male', 'Female', 'Other'];
 
+  @override
+  void initState() {
+    super.initState();
+
+    // Add listener to check for changes in the password field
+    _passwordController.addListener(() {
+      setState(() {
+        _isPasswordFieldEmpty = _passwordController.text.isEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _passwordController.removeListener(() {});
+    super.dispose();
+  }
+
+  // Registration function
   Future<void> _register() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
         _isLoading = true; // Set loading to true
       });
 
-      final response = await http.post(
-        Uri.parse('http://localhost/myapp_api/register.php'),
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: {
-          'username': _usernameController.text,
-          'email': _emailController.text,
-          'faculty': _selectedFaculty ?? '',
-          'gender': _selectedGender ?? '',
-          'contact': _contactController.text,
-          'password': _passwordController.text,
-        },
-      );
-
-      setState(() {
-        _isLoading = false; // Reset loading state after response
-      });
-
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(response.body);
-        if (responseBody['message'] ==
-            'This email is already associated with an account.') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(responseBody['message'])),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Thank you for registering!')),
-          );
-
-          _usernameController.clear();
-          _emailController.clear();
-          _contactController.clear();
-          _passwordController.clear();
-          setState(() {
-            _selectedFaculty = null;
-            _selectedGender = null;
-          });
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => LoginPage()));
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to register: ${response.body}')),
+      try {
+        // Sending registration data to the server
+        final response = await http.post(
+          Uri.parse(
+              'http://localhost/myapp_api/register.php'), // Update API URL
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: {
+            'username': _usernameController.text,
+            'email': _emailController.text,
+            'location': _locationController.text, // Send location value
+            'gender': _selectedGender ?? '',
+            'contact': _contactController.text,
+            'password': _passwordController.text,
+          },
         );
+
+        // Log the full response to debug issues
+        print('Response Status: ${response.statusCode}');
+        print('Response Body: ${response.body}'); // For debugging
+
+        if (response.statusCode == 200) {
+          final responseBody = jsonDecode(response.body);
+
+          // Check the response structure carefully
+          if (responseBody['message'] ==
+              'This email is already associated with an account.') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(responseBody['message'])),
+            );
+          } else if (responseBody['status'] == 'success') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('Please check your email for Verify OTP.')),
+            );
+
+            // After successful registration, navigate to OTP input page
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => OtpInputPage(
+                  email: _emailController.text,
+                  username: _usernameController.text,
+                  password: _passwordController.text,
+                  id: _idController
+                      .text, // Assuming there's a controller for id
+                  location: _locationController.text,
+                  gender: _selectedGender ?? '',
+                  userId: '',
+                  contact: _contactController.text,
+                ),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content:
+                      Text('Failed to register: ${responseBody['message']}')),
+            );
+          }
+        } else {
+          // Handle unexpected status code
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text('Error: ${response.statusCode} - ${response.body}')),
+          );
+        }
+      } catch (e) {
+        // Catch network or unexpected errors
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error occurred: $e')),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false; // Reset loading state after response
+        });
       }
     }
   }
 
+  // Validation functions for form fields
   String? _validateUsername(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a username';
@@ -158,11 +210,12 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  // Username field
                   TextFormField(
                     controller: _usernameController,
                     decoration: InputDecoration(
                       labelText: 'Username',
-                      prefixIcon: Icon(Icons.person),
+                      prefixIcon: const Icon(Icons.person),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -170,11 +223,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     validator: _validateUsername,
                   ),
                   const SizedBox(height: 16),
+                  // Email field
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      prefixIcon: Icon(Icons.email),
+                      prefixIcon: const Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -182,33 +236,25 @@ class _RegisterPageState extends State<RegisterPage> {
                     validator: _validateEmail,
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _selectedFaculty,
+                  // Location field
+                  TextFormField(
+                    controller: _locationController, // Location field
                     decoration: InputDecoration(
-                      labelText: 'Faculty',
+                      labelText: 'Location',
+                      prefixIcon: const Icon(Icons.location_on),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    items: faculties.map((String faculty) {
-                      return DropdownMenuItem<String>(
-                        value: faculty,
-                        child: Text(faculty),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedFaculty = newValue;
-                      });
-                    },
                     validator: (value) {
-                      if (value == null) {
-                        return 'Please select a faculty';
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your location';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
+                  // Gender dropdown
                   DropdownButtonFormField<String>(
                     value: _selectedGender,
                     decoration: InputDecoration(
@@ -236,11 +282,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   const SizedBox(height: 16),
+                  // Contact number field
                   TextFormField(
                     controller: _contactController,
                     decoration: InputDecoration(
                       labelText: 'Contact Number',
-                      prefixIcon: Icon(Icons.phone),
+                      prefixIcon: const Icon(Icons.phone),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -248,39 +295,47 @@ class _RegisterPageState extends State<RegisterPage> {
                     validator: _validateContact,
                   ),
                   const SizedBox(height: 16),
+                  // Password field
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
+                      prefixIcon: const Icon(Icons.lock),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
+                      suffixIcon: !_isPasswordFieldEmpty
+                          ? IconButton(
+                              icon: Icon(
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            )
+                          : null, // Only show icon when password is not empty
                     ),
-                    obscureText: true,
+                    obscureText: !_isPasswordVisible,
                     validator: _validatePassword,
                   ),
                   const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : _register, // Disable button if loading
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      backgroundColor: const Color.fromARGB(
-                          255, 146, 137, 161), // Button color
-                    ),
-                    child: _isLoading // Show loading indicator
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Register',
-                            style: TextStyle(fontSize: 16),
+                  // Register button
+                  _isLoading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: _register,
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
-                  ),
+                          child: const Text('Register'),
+                        ),
                 ],
               ),
             ),
