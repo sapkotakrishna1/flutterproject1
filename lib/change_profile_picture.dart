@@ -3,6 +3,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class ChangeProfilePicturePage extends StatefulWidget {
+  const ChangeProfilePicturePage({super.key});
+
   @override
   _ChangeProfilePicturePageState createState() =>
       _ChangeProfilePicturePageState();

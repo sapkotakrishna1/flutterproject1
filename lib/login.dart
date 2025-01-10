@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 import 'profile.dart';
 import 'reg.dart';
+import 'config.dart';
 import 'forgot_password.dart'; // Import the ForgotPasswordPage
 import 'admin.dart'; // Import the AdminPage
 
@@ -36,8 +37,9 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://localhost/myapp_api/login.php'),
-          headers: {"Content-Type": "application/json"},
+          Uri.parse(
+              '${Config.baseUrl}${Config.login}'), // Replace with your PHP logout API URL
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
           body: jsonEncode({
             "email": _usernameController.text,
             "password": _passwordController.text,
@@ -138,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(height: 50),
+              const SizedBox(height: 40),
               Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
@@ -164,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                               ? 'Please enter an email'
                               : null,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
                         TextFormField(
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible, // Toggle visibility
@@ -200,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                               ? 'Please enter a password'
                               : null,
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: _isLoading ? null : _login,
                           style: ElevatedButton.styleFrom(
@@ -211,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           child: _isLoading
                               ? const CircularProgressIndicator(
-                                  color: Colors.white)
+                                  color: Color.fromARGB(255, 128, 100, 100))
                               : const Text('Login',
                                   style: TextStyle(fontSize: 16)),
                         ),
@@ -221,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: const Text('New here? Register',
                               style: TextStyle(color: Colors.blue)),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 10),
                         TextButton(
                           onPressed:
                               _navigateToForgotPassword, // Forgot Password

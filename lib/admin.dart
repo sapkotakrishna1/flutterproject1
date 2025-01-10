@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/postdata.dart'; // Import PostData.dart
 import 'package:myapp/userdata.dart'; // Import UserData.dart
 import 'package:myapp/buydata.dart';
+import 'package:myapp/adminprofile.dart'; // Import AdminProfile.dart
 
 class AdminPage extends StatelessWidget {
   final String username;
@@ -39,11 +40,25 @@ class AdminPage extends StatelessWidget {
     );
   }
 
+  // Navigate to AdminProfilePage
+  void _navigateToAdminProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            AdminProfilePage(username: username, email: email),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Get the first letter of the username
+    String firstLetter = username.isNotEmpty ? username[0].toUpperCase() : "";
+
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50.0), // Standard app bar height
+        preferredSize: const Size.fromHeight(60.0), // Standard app bar height
         child: AppBar(
           automaticallyImplyLeading: false, // Disable the back button
           title: Padding(
@@ -57,13 +72,24 @@ class AdminPage extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                // Logout button
-                IconButton(
-                  icon: const Icon(Icons.exit_to_app, color: Colors.white),
-                  onPressed: () {
-                    // Implement logout functionality here
-                    print('Logout');
+                // CircleAvatar with first letter of the username and logout functionality
+                GestureDetector(
+                  onTap: () {
+                    _navigateToAdminProfile(
+                        context); // Navigate to AdminProfilePage
                   },
+                  child: CircleAvatar(
+                    radius: 20, // Size of the circle
+                    backgroundColor: const Color.fromARGB(
+                        255, 8, 8, 8), // Circle background color
+                    child: Text(
+                      firstLetter, // First letter of username
+                      style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -245,36 +271,6 @@ class AdminPage extends StatelessWidget {
                         ),
                         const SizedBox(
                             width: 20), // Space between the two boxes
-                        // Second box - Post Data Box
-                        //GestureDetector(
-                        //  onTap: () => _navigateToPostData(
-                        //      context), // Navigate to PostDataPage
-                        //  child: ClipRRect(
-                        //    borderRadius:
-                        //        BorderRadius.circular(8.0), // Rounded corners
-                        //    child: Container(
-                        //      width: 60, // Box size
-                        //      height: 60, // Box size
-                        //      color: Colors.green, // Box color
-                        //      child: const Column(
-                        //        mainAxisAlignment: MainAxisAlignment.center,
-                        //        children: [
-                        //          Icon(Icons.post_add,
-                        //              color: Colors.white), // Post icon
-                        //          SizedBox(
-                        //              height: 5), // Space between icon and text
-                        //          Text(
-                        //            'Post Data', // Text below the icon
-                        //            style: TextStyle(
-                        //              color: Colors.white,
-                        //              fontSize: 12, // Font size for label
-                        //            ),
-                        //          ),
-                        //        ],
-                        //      ),
-                        //    ),
-                        //  ),
-                        //),
                       ],
                     ),
                   ],

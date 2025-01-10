@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/buy.dart';
 import 'profile.dart';
 import 'addobj.dart';
+import 'config.dart';
 import 'addcart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -29,7 +30,8 @@ class _HomePageState extends State<HomePage> {
   List<dynamic> posts = [];
   bool isLoading = true;
 
-  String baseUrl = 'http://192.168.1.81/myapp_api/post.php';
+  Uri baseUrl = Uri.parse(
+      '${Config.baseUrl}${Config.post}'); // Replace with your PHP logout API URL
 
   @override
   void initState() {
@@ -51,7 +53,8 @@ class _HomePageState extends State<HomePage> {
       isLoading = true;
     });
     try {
-      final response = await http.get(Uri.parse(baseUrl));
+      final response =
+          await http.get(Uri.parse(Uri.encodeFull(baseUrl.toString())));
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = json.decode(response.body);
 
@@ -210,6 +213,7 @@ class _HomePageState extends State<HomePage> {
                                   builder: (context) => BuyPage(
                                     post: post,
                                     username: widget.username,
+                                    email: widget.email,
                                     id: widget.id,
                                   ),
                                 ),
@@ -218,7 +222,7 @@ class _HomePageState extends State<HomePage> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
+                                boxShadow: const [
                                   BoxShadow(
                                     color: Colors.black26,
                                     blurRadius: 8,
@@ -230,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   // Image section - takes 80% of space
                                   Expanded(
-                                    flex: 8, // 80% space for the image
+                                    flex: 6, // 80% space for the image
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(12),
                                       child: post['images'] != null &&
@@ -251,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                                           : const Icon(Icons.error),
                                     ),
                                   ),
-                                  const SizedBox(height: 6),
+                                  const SizedBox(height: 4),
                                   // Name and Price section - takes 20% of space
                                   Expanded(
                                     flex: 2, // 20% space for name and price
@@ -268,9 +272,9 @@ class _HomePageState extends State<HomePage> {
                                                 fontWeight: FontWeight.bold),
                                             textAlign: TextAlign.center,
                                           ),
-                                          const SizedBox(height: 4),
+                                          const SizedBox(height: 3),
                                           Text(
-                                            'Price: ${post['price']} NPR',
+                                            'NPR ${post['price']} ',
                                             style: const TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.grey),

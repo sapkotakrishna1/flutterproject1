@@ -2,6 +2,7 @@ import 'dart:async'; // Import for Timer functionality
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'config.dart'; // Import the Config class
 import 'login.dart'; // Import the LoginPage here
 import 'package:crypto/crypto.dart'; // Import crypto package for hashing
 
@@ -54,7 +55,7 @@ class _OtpInputPageState extends State<OtpInputPage> {
 
       final response = await http.post(
         Uri.parse(
-            'http://localhost/myapp_api/verifyotpregister.php'), // Ensure this is correct for your server
+            '${Config.baseUrl}${Config.login}'), // Replace with your PHP logout API URL
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "id": widget.id,

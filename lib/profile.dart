@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'config.dart';
 import 'login.dart'; // Ensure this file exists and is properly set up
 import 'about.dart'; // Import About page
 import 'terms_conditions.dart'; // Import Terms & Conditions page
@@ -34,9 +35,9 @@ class _ProfilePageState extends State<ProfilePage> {
       isLoading = true; // Show loading indicator
     });
 
-    final response = await http.post(
-      Uri.parse('http://localhost/myapp_api/logout.php'), // Logout API endpoint
-    );
+    final response = await http.post(Uri.parse(
+            '${Config.baseUrl}${Config.logoutEndpoint}') // Replace with your PHP logout API URL
+        );
 
     setState(() {
       isLoading = false; // Hide loading indicator after response

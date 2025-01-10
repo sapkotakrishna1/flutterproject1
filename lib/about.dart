@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AboutPage extends StatelessWidget {
-  const AboutPage({Key? key}) : super(key: key);
+  const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class AboutPage extends StatelessWidget {
                         0.3, // 30% of screen width
                     height:
                         120, // Increase height to make room for text below the image
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle, // Make the container circular
                       boxShadow: [
                         BoxShadow(

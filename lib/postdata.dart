@@ -16,7 +16,7 @@ class PostDataPage extends StatelessWidget {
       body: Center(
         child: Text(
           'Post Data for $username',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
     );

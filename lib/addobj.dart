@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart'; // For desktop/web platforms
 import 'dart:io'; // For working with images (File) on mobile and desktop
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'config.dart';
 import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'dart:typed_data'; // For working with byte data on the web
 
@@ -118,8 +119,10 @@ class _AddObjPageState extends State<AddObjPage> {
     // Prepare the request
     final request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://192.168.1.81/myapp_api/addobj.php'),
+      Uri.parse(
+          '${Config.baseUrl}${Config.addobj}'), // Replace with your PHP logout API URL
     );
+    request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
     // Add fields to the request
     request.fields['name'] = _nameController.text;
@@ -257,7 +260,8 @@ class _AddObjPageState extends State<AddObjPage> {
                   labelText: 'Price',
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
               ),
               const SizedBox(height: 8),
 
@@ -326,9 +330,6 @@ class _AddObjPageState extends State<AddObjPage> {
               // Submit button
               ElevatedButton(
                 onPressed: _isLoading ? null : _uploadImages,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('Submit Data'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -337,6 +338,9 @@ class _AddObjPageState extends State<AddObjPage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
+                child: _isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text('Submit Data'),
               ),
             ],
           ),

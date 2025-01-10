@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 
-class AddCartPage extends StatelessWidget {
+class AddCartPage extends StatefulWidget {
   const AddCartPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController itemNameController = TextEditingController();
-    int quantity = 1;
+  _AddCartPageState createState() => _AddCartPageState();
+}
 
+class _AddCartPageState extends State<AddCartPage> {
+  // List to store cart items
+  List<Map<String, dynamic>> cartItems = [];
+
+  // Controllers and variables for form inputs
+  final TextEditingController itemNameController = TextEditingController();
+  int quantity = 1;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add to Cart'),
@@ -17,6 +26,7 @@ class AddCartPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Item Name Input Field
             TextField(
               controller: itemNameController,
               decoration: const InputDecoration(
@@ -25,6 +35,8 @@ class AddCartPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
+
+            // Quantity Dropdown
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -42,31 +54,72 @@ class AddCartPage extends StatelessWidget {
                       .toList(),
                   onChanged: (newValue) {
                     if (newValue != null) {
-                      quantity = newValue;
+                      setState(() {
+                        quantity = newValue;
+                      });
                     }
                   },
                 ),
               ],
             ),
             const SizedBox(height: 16),
+
+            // Add to Cart Button
             ElevatedButton(
               onPressed: () {
-                // Handle add to cart action
                 final itemName = itemNameController.text;
 
-                // For now, just print to console
-                print('Item Added to Cart: $itemName, Quantity: $quantity');
+                // If item name is not empty, add to cart
+                if (itemName.isNotEmpty) {
+                  setState(() {
+                    cartItems.add({
+                      'name': itemName,
+                      'quantity': quantity,
+                    });
+                  });
 
-                // Optionally, clear the fields
-                itemNameController.clear();
+                  // Clear the text field for the next item
+                  itemNameController.clear();
 
-                // Show a Snackbar for confirmation
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('$itemName added to cart!')),
-                );
+                  // Show a Snackbar for confirmation
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('$itemName added to cart!')),
+                  );
+                }
               },
               child: const Text('Add to Cart'),
             ),
+            const SizedBox(height: 20),
+
+            // Display Cart Items
+            if (cartItems.isNotEmpty) ...[
+              const Text(
+                'Cart Items:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              // ListView to show cart items
+              Expanded(
+                child: ListView.builder(
+                  itemCount: cartItems.length,
+                  itemBuilder: (context, index) {
+                    final cartItem = cartItems[index];
+                    return ListTile(
+                      title: Text(cartItem['name']),
+                      subtitle: Text('Quantity: ${cartItem['quantity']}'),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.remove_circle_outline),
+                        onPressed: () {
+                          setState(() {
+                            cartItems.removeAt(index);
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ],
         ),
       ),

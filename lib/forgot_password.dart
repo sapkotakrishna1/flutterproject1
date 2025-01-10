@@ -20,7 +20,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://localhost/myapp_api/forgot_password.php'),
+          Uri.parse('http://92.168.1.81/myapp_api/forgot_password.php'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"email": _emailController.text}),
         );

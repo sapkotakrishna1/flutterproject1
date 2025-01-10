@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'config.dart';
 import 'package:http/http.dart' as http;
 import 'otpinput.dart'; // Import OTP input page
 
@@ -55,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
         // Sending registration data to the server
         final response = await http.post(
           Uri.parse(
-              'http://localhost/myapp_api/register.php'), // Update API URL
+              '${Config.baseUrl}${Config.register}'), // Replace with your PHP logout API URL
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded',
           },
@@ -194,7 +195,7 @@ class _RegisterPageState extends State<RegisterPage> {
           padding: const EdgeInsets.all(35.0),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color.fromARGB(255, 223, 217, 217),
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: const [
                 BoxShadow(

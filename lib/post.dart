@@ -1,5 +1,6 @@
 class Post {
   final String username; // User who created the post
+  final int email; // email of the object
   final String name; // Name of the object
   final String description; // Description of the object
   final String imageUrl; // URL of the object's image
@@ -9,6 +10,7 @@ class Post {
 
   Post({
     required this.username,
+    required this.email,
     required this.name,
     required this.description,
     required this.imageUrl,
@@ -19,6 +21,7 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
+      email: json['email'], // Assuming the JSON has this field
       username: json['username'], // Assuming the JSON has this field
       name: json['name'], // Assuming the JSON has this field
       createAt: json['create_at'], // Assuming the JSON has this field

@@ -17,7 +17,7 @@ class BuyDataPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Purchase Successful'),
+        title: const Text('Purchase Successful'),
         content: Text('You have purchased $itemName.'),
         actions: [
           TextButton(
@@ -56,13 +56,13 @@ class BuyDataPage extends StatelessWidget {
                 subtitle: Text(item['price']!),
                 trailing: ElevatedButton(
                   onPressed: () => _buyItem(context, item['name']!),
-                  child: const Text('Buy'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
+                  child: const Text('Buy'),
                 ),
               ),
             );
