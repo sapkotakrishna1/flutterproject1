@@ -1,0 +1,428 @@
+[27-Dec-2024 10:55:04 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 52
+[27-Dec-2024 10:55:04 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:52
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 52
+[27-Dec-2024 10:55:20 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 52
+[27-Dec-2024 10:55:20 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:52
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 52
+[27-Dec-2024 10:55:32 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 52
+[27-Dec-2024 10:55:32 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:52
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 52
+[27-Dec-2024 10:57:08 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 59
+[27-Dec-2024 10:57:08 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:59
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 59
+[27-Dec-2024 10:59:51 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 74
+[27-Dec-2024 10:59:51 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:74
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 74
+[27-Dec-2024 11:03:41 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 11:03:41 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:13:18 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:13:18 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:15:44 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:15:44 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:19:24 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:19:24 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:20:09 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:20:09 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:23:29 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:23:29 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:25:47 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 43
+[27-Dec-2024 15:25:47 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:43
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 43
+[27-Dec-2024 15:26:49 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 43
+[27-Dec-2024 15:26:49 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:43
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 43
+[27-Dec-2024 15:27:12 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 43
+[27-Dec-2024 15:27:12 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:43
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 43
+[27-Dec-2024 15:29:14 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:29:14 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:51
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:30:18 Europe/Berlin] No images provided.
+[27-Dec-2024 15:30:24 Europe/Berlin] No images provided.
+[27-Dec-2024 15:30:32 Europe/Berlin] Invalid request method. Only POST is allowed.
+[27-Dec-2024 15:30:40 Europe/Berlin] Invalid request method. Only POST is allowed.
+[27-Dec-2024 15:31:20 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:31:20 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:51
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:32:56 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:32:56 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:51
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:35:40 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:35:40 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:51
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:36:32 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:36:32 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:51
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 15:37:44 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 68
+[27-Dec-2024 15:37:44 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:68
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 68
+[27-Dec-2024 15:38:06 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 68
+[27-Dec-2024 15:38:06 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:68
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 68
+[27-Dec-2024 15:39:00 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 68
+[27-Dec-2024 15:39:00 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:68
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 68
+[27-Dec-2024 15:40:16 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:40:16 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:69
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:40:58 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:40:58 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:69
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:41:08 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:41:08 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:69
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:42:19 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:42:19 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:69
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:42:41 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:42:41 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:69
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 15:43:38 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 54
+[27-Dec-2024 15:43:38 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:54
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 54
+[27-Dec-2024 15:44:55 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 54
+[27-Dec-2024 15:44:55 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:54
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 54
+[27-Dec-2024 15:46:38 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 15:46:38 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:56
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 15:48:06 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 15:48:06 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:56
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 15:49:10 Europe/Berlin] Invalid request method. Only POST is allowed.
+[27-Dec-2024 15:49:51 Europe/Berlin] Invalid request method. Only POST is allowed.
+[27-Dec-2024 15:54:10 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 62
+[27-Dec-2024 15:54:10 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:62
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 62
+[27-Dec-2024 15:55:50 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 62
+[27-Dec-2024 15:55:50 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:62
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 62
+[27-Dec-2024 15:56:46 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:56:46 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 15:57:56 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 74
+[27-Dec-2024 15:57:56 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:74
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 74
+[27-Dec-2024 16:01:44 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 77
+[27-Dec-2024 16:01:44 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:77
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 77
+[27-Dec-2024 16:03:06 Europe/Berlin] No images provided.
+[27-Dec-2024 16:04:25 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:04:51 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:05:42 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:07:10 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:08:20 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:08:27 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:09:13 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:09:45 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:11:35 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:12:47 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:13:34 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:14:02 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:14:09 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:18:38 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:18:43 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:21:14 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:22:11 Europe/Berlin] Invalid image format.
+[27-Dec-2024 16:27:32 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 16:27:32 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 16:28:04 Europe/Berlin] Invalid request method. Only POST is allowed.
+[27-Dec-2024 16:29:26 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 16:29:26 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 16:29:37 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 16:29:37 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 16:30:45 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 73
+[27-Dec-2024 16:30:45 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:73
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 73
+[27-Dec-2024 16:30:49 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 73
+[27-Dec-2024 16:30:49 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:73
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 73
+[27-Dec-2024 16:30:50 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 73
+[27-Dec-2024 16:30:50 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:73
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 73
+[27-Dec-2024 16:32:05 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 55
+[27-Dec-2024 16:32:05 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:55
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 55
+[27-Dec-2024 16:32:18 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 55
+[27-Dec-2024 16:32:18 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:55
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 55
+[27-Dec-2024 16:32:24 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 55
+[27-Dec-2024 16:32:24 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:55
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 55
+[27-Dec-2024 16:32:36 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 19
+[27-Dec-2024 16:32:36 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function send_error() in C:\xampp\htdocs\myapp_api\addobj.php:20
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 20
+[27-Dec-2024 16:33:57 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 19
+[27-Dec-2024 16:33:57 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function send_error() in C:\xampp\htdocs\myapp_api\addobj.php:20
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 20
+[27-Dec-2024 16:34:12 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 19
+[27-Dec-2024 16:34:12 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function send_error() in C:\xampp\htdocs\myapp_api\addobj.php:20
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 20
+[27-Dec-2024 16:34:38 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 62
+[27-Dec-2024 16:34:38 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:62
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 62
+[27-Dec-2024 16:34:52 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:34:52 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:56
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:35:10 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 54
+[27-Dec-2024 16:35:10 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:54
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 54
+[27-Dec-2024 16:35:25 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 16:35:25 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:69
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 16:35:45 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 16:35:45 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:69
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 69
+[27-Dec-2024 16:36:18 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 16:36:18 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:72
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 72
+[27-Dec-2024 16:36:35 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 73
+[27-Dec-2024 16:36:35 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:73
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 73
+[27-Dec-2024 16:37:21 Europe/Berlin] PHP Warning:  Undefined variable $dbconnection in C:\xampp\htdocs\myapp_api\addobj.php on line 74
+[27-Dec-2024 16:37:21 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:74
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 74
+[27-Dec-2024 16:39:24 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:39:24 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:56
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:40:25 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:40:25 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:56
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:41:08 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:41:08 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:56
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:43:07 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:43:07 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:56
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:44:14 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:44:14 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:56
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:46:52 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:46:52 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:56
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 56
+[27-Dec-2024 16:47:54 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 77
+[27-Dec-2024 16:47:54 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:77
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 77
+[27-Dec-2024 16:51:46 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 77
+[27-Dec-2024 16:51:46 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:77
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 77
+[27-Dec-2024 16:52:08 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 77
+[27-Dec-2024 16:52:08 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:77
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 77
+[27-Dec-2024 16:55:04 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 86
+[27-Dec-2024 16:55:04 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:86
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 86
+[27-Dec-2024 16:56:48 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 16:56:48 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:87
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 16:56:55 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 16:56:55 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:87
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 16:57:01 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 16:57:01 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:87
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 16:59:14 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 16:59:14 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:87
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 17:01:06 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 17:01:06 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:87
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 87
+[27-Dec-2024 17:03:27 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 47
+[27-Dec-2024 17:03:27 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 48
+[27-Dec-2024 17:03:27 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 17:03:27 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 90
+[27-Dec-2024 17:03:27 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:90
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 90
+[27-Dec-2024 17:03:35 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 47
+[27-Dec-2024 17:03:35 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 48
+[27-Dec-2024 17:03:35 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 17:03:35 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 90
+[27-Dec-2024 17:03:35 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:90
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 90
+[27-Dec-2024 17:03:40 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 47
+[27-Dec-2024 17:03:40 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 48
+[27-Dec-2024 17:03:40 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 17:03:40 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 90
+[27-Dec-2024 17:03:40 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:90
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 90
+[27-Dec-2024 17:04:55 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 47
+[27-Dec-2024 17:04:55 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 48
+[27-Dec-2024 17:04:55 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 17:04:55 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 91
+[27-Dec-2024 17:04:55 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:91
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 91
+[27-Dec-2024 17:05:04 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 47
+[27-Dec-2024 17:05:04 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 48
+[27-Dec-2024 17:05:04 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 17:05:04 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 91
+[27-Dec-2024 17:05:04 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:91
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 91
+[27-Dec-2024 17:06:48 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 47
+[27-Dec-2024 17:06:48 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 48
+[27-Dec-2024 17:06:48 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\myapp_api\addobj.php on line 51
+[27-Dec-2024 17:06:48 Europe/Berlin] PHP Warning:  Undefined variable $pdo in C:\xampp\htdocs\myapp_api\addobj.php on line 91
+[27-Dec-2024 17:06:48 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\myapp_api\addobj.php:91
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\myapp_api\addobj.php on line 91

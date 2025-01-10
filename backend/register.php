@@ -1,26 +1,29 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-include 'dbconnection.php'; // Ensure this file is correct
-include 'send_email.php'; // Include the send_email.php file
 
+include 'dbconnection.php'; // Include your DB connection file
+include 'otpemail.php'; // Include the email sending script
+
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// Step 1: Handle the registration request (POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Log the received POST request
-    file_put_contents('php://stderr', "Received POST request\n");
-
-    // Determine content type and get data
+    // Check if the data is in JSON format or form-encoded
     $data = ($_SERVER['CONTENT_TYPE'] === 'application/json')
         ? json_decode(file_get_contents("php://input"), true)
         : $_POST;
 
-    // Check for required fields
-    if (!empty($data['username']) && !empty($data['email']) && !empty($data['faculty']) && !empty($data['gender']) && !empty($data['contact']) && !empty($data['password'])) {
+    // Validate required fields
+    if (!empty($data['username']) && !empty($data['email']) && !empty($data['location']) && !empty($data['gender']) && !empty($data['contact']) && !empty($data['password'])) {
         $username = $data['username'];
         $email = $data['email'];
-        $faculty = $data['faculty'];
+        $location = $data['location'];  // Changed from 'faculty' to 'location'
         $gender = $data['gender'];
         $contact = $data['contact'];
-        $password = password_hash($data['password'], PASSWORD_BCRYPT);
+        $password = password_hash($data['password'], PASSWORD_BCRYPT); // Secure password hash
 
         // Check if the email already exists
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
@@ -37,33 +40,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Email already exists
             echo json_encode(["message" => "This email is already associated with an account."]);
         } else {
-            // Prepare and execute the SQL statement for user creation
-            $stmt = $conn->prepare("INSERT INTO users (username, email, faculty, gender, contact, password) VALUES (?, ?, ?, ?, ?, ?)");
+            // Step 2: Generate OTP first
+            $otp = rand(100000, 999999); // Generate a 6-digit OTP
+
+            // Insert user data into the database but don't activate them yet
+            $stmt = $conn->prepare("INSERT INTO users (username, email, location, gender, contact, password, otp, otp_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
             if (!$stmt) {
                 echo json_encode(["message" => "Failed to prepare statement for user creation", "error" => $conn->error]);
                 exit();
             }
 
-            $stmt->bind_param("ssssss", $username, $email, $faculty, $gender, $contact, $password);
+            // Bind user data to the prepared statement, including the OTP and timestamp
+            $stmt->bind_param("sssssss", $username, $email, $location, $gender, $contact, $password, $otp);
 
             if ($stmt->execute()) {
-                // Send confirmation email
-                if (sendConfirmationEmail($email, $username)) {
-                    echo json_encode(["message" => "User created successfully", "id" => $stmt->insert_id]);
+                // Step 3: Send OTP to user's email
+                $subject = "Your OTP for Registration";
+                $message = "Your OTP for registration is: $otp. It will expire in 5 minutes.";
+
+                // Use the sendOtpEmail function from otpemail.php to send the email
+                if (sendOtpEmail($email, $otp)) {
+                    echo json_encode([
+                        "status" => "success", 
+                        "message" => "User created successfully, OTP sent to email.",
+                        "data" => [
+                            "username" => $username,
+                            "email" => $email,
+                            "location" => $location,
+                            "gender" => $gender,
+                            "contact" => $contact
+                        ]
+                    ]);
                 } else {
-                    echo json_encode(["message" => "User created, but email failed to send."]);
+                    echo json_encode(["status" => "error", "message" => "User created, but failed to send OTP email."]);
                 }
             } else {
-                echo json_encode(["message" => "User creation failed", "error" => $stmt->error]);
+                echo json_encode(["status" => "error", "message" => "User creation failed", "error" => $stmt->error]);
             }
 
             $stmt->close();
         }
     } else {
-        echo json_encode(["message" => "Invalid input"]);
+        echo json_encode(["status" => "error", "message" => "Invalid input, all fields are required."]);
     }
 } else {
-    echo json_encode(["message" => "Method not allowed"]);
+    echo json_encode(["status" => "error", "message" => "Method not allowed"]);
 }
 
 $conn->close();

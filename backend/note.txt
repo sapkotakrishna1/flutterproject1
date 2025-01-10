@@ -96,7 +96,7 @@ CREATE TABLE users (
     id INT(11) NOT NULL,
     username VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    faculty VARCHAR(50),
+    location VARCHAR(50),
     gender VARCHAR(10),
     contact VARCHAR(15),
     password VARCHAR(255) NOT NULL,
@@ -116,6 +116,24 @@ CREATE TABLE objects (
     age INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Add timestamp column
 );
+
+
+CREATE TABLE verifyusers (
+    id INT(11) NOT NULL,
+    username VARCHAR(30) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    location VARCHAR(50),
+    gender VARCHAR(10),
+    contact VARCHAR(10),
+    password VARCHAR(255) NOT NULL,
+    otp INT(6),
+    is_verified INT(5),
+    created_at DATETIME DEFAULT NULL,
+    PRIMARY KEY (id, email)
+);
+
+
+
 
 
 

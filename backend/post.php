@@ -1,45 +1,39 @@
 <?php
-header('Content-Type: application/json'); // Set the content type to JSON
-header('Access-Control-Allow-Origin: *'); // Allow all origins
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS'); // Allow specific methods
-header('Access-Control-Allow-Headers: Content-Type'); // Allow specific headers
+// Allow the request to come from any origin
+header('Access-Control-Allow-Origin: *'); // This allows cross-origin requests
+
+// Set the response content type to JSON
+header('Content-Type: application/json');
 
 // Include your database connection file
-include 'dbconnection.php'; // Ensure the path is correct
+include 'dbconnection.php';
 
-// Check if the connection was successful
-if (!$conn) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed']);
-    exit;
-}
-
-// Fetch objects
-$sql = "SELECT username, name, description, image, price, age, created_at FROM objects";
+// Prepare the SQL query to fetch data from the database
+$sql = "SELECT id, name, description, price, age, username, images, created_at FROM objects";
 $result = $conn->query($sql);
 
 $objects = [];
 
-if ($result) { // Check if the query was successful
-    if ($result->num_rows > 0) {
-        // Output data of each row
-        while ($row = $result->fetch_assoc()) {
-            $objects[] = $row;
-        }
-    } else {
-        echo json_encode([]); // Return an empty array if no records found
-        exit;
+// If the query is successful, fetch the data
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Directly use the 'images' field without changing its content
+        $images = $row['images'] ? explode(",", $row['images']) : []; // Split the Base64 string into an array
+
+        // Assign the images array back to the row
+        $row['images'] = $images;
+
+        // Add the row to the objects array
+        $objects[] = $row;
     }
+
+    // Return the objects data as JSON
+    echo json_encode($objects);
 } else {
-    // Handle query error
-    http_response_code(500); // Set response code to 500 (Internal Server Error)
-    echo json_encode(['error' => 'Database query failed']);
-    exit;
+    // If no records are found, return an empty array
+    echo json_encode([]);
 }
 
-// Return JSON response
-echo json_encode($objects);
-
-// Close the connection
+// Close the database connection
 $conn->close();
 ?>

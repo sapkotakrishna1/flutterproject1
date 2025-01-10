@@ -9,96 +9,99 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include 'dbconnection.php';
-include 'otpemail.php'; // Include the OTP email sending functionality
+include 'dbconnection.php'; // Assuming this connects to the database
 
+// Read the incoming JSON data
 $json_input = file_get_contents('php://input');
 error_log("Incoming JSON: " . $json_input);
 
 $data = json_decode($json_input);
 
+// Check for JSON decode errors
 if (json_last_error() !== JSON_ERROR_NONE) {
     error_log('JSON decode error: ' . json_last_error_msg());
     echo json_encode(['success' => false, 'message' => 'Invalid JSON']);
     exit();
 }
 
+// Extract email and password from incoming data
 $email = $data->email ?? null;
 $password = $data->password ?? null;
 
+// Ensure email and password are provided
 if (empty($email) || empty($password)) {
     echo json_encode(['success' => false, 'message' => 'Email and password are required.']);
     exit();
 }
 
-$sql = "SELECT username, password, otp_created_at FROM users WHERE email = ?";
-$stmt = $conn->prepare($sql);
-
-if (!$stmt) {
-    error_log('SQL preparation failed: ' . $conn->error);
-    echo json_encode(['success' => false, 'message' => 'SQL preparation failed.']);
+// First, check in the `verifyusers` table (hashed password)
+$sql_user = "SELECT username, password FROM verifyusers WHERE email = ?";
+$stmt_user = $conn->prepare($sql_user);
+if (!$stmt_user) {
+    error_log('SQL preparation failed for user table: ' . $conn->error);
+    echo json_encode(['success' => false, 'message' => 'SQL preparation failed for user table.']);
     exit();
 }
 
-$stmt->bind_param('s', $email);
-$stmt->execute();
-$result = $stmt->get_result();
+$stmt_user->bind_param('s', $email);
+$stmt_user->execute();
+$result_user = $stmt_user->get_result();
 
-if ($result->num_rows === 0) {
-    echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
-    exit();
-}
+// If user found in `verifyusers`, check password
+if ($result_user->num_rows > 0) {
+    $user = $result_user->fetch_assoc();
+    if (password_verify($password, $user['password'])) {
+        $_SESSION['email'] = $email;
+        $username = $user['username'];
 
-$user = $result->fetch_assoc();
-
-if (password_verify($password, $user['password'])) {
-    $_SESSION['email'] = $email;
-    $username = $user['username'];
-
-    // Check if OTP was created within the last 24 hours
-    if (!empty($user['otp_created_at'])) {
-        $otp_created_at = new DateTime($user['otp_created_at']);
-        $current_time = new DateTime();
-        $interval = $current_time->diff($otp_created_at);
-        $totalHours = ($interval->d * 24) + $interval->h;
-
-        error_log("Total hours since last OTP: " . $totalHours);
-
-        if ($totalHours < 24) {
-            // OTP exists and is within 24 hours, redirect to home
-            echo json_encode(['success' => true, 'redirect' => 'home.php', 'username' => $user['username']]);
-            exit();
-        }
-    }
-
-    // Generate and send a new OTP
-    $otp = rand(100000, 999999);
-    if (sendOtpEmail($email, $otp)) {
-        $_SESSION['otp'] = $otp;
-
-        // Update the database with the new OTP and creation time
-        $stmt = $conn->prepare("UPDATE users SET otp = ?, otp_created_at = NOW() WHERE email = ?");
-        if ($stmt) {
-            $stmt->bind_param("is", $otp, $email);
-            if ($stmt->execute()) {
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'OTP generated and sent successfully. Please enter the OTP.',
-                    'otp_required' => true
-                ]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to update OTP in the database.']);
-            }
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Database query preparation failed.']);
-        }
+        // Redirect to home.php for regular users
+        echo json_encode([
+            'success' => true,
+            'message' => 'Login successful',
+            'username' => $username,
+            'redirect' => 'home.php' // Regular user redirect
+        ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to send OTP email.']);
+        echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
     }
+    $stmt_user->close();
 } else {
-    echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
+    // If not found in `verifyusers`, check in `admindata` table (plain password)
+    $sql_admin = "SELECT username, password FROM admindata WHERE email = ?";
+    $stmt_admin = $conn->prepare($sql_admin);
+    if (!$stmt_admin) {
+        error_log('SQL preparation failed for admin table: ' . $conn->error);
+        echo json_encode(['success' => false, 'message' => 'SQL preparation failed for admin table.']);
+        exit();
+    }
+
+    $stmt_admin->bind_param('s', $email);
+    $stmt_admin->execute();
+    $result_admin = $stmt_admin->get_result();
+
+    // If email is found in `admindata`, check the plain password
+    if ($result_admin->num_rows > 0) {
+        $admin = $result_admin->fetch_assoc();
+        if ($password === $admin['password']) {
+            $_SESSION['email'] = $email;
+            $username = $admin['username'];
+
+            // Redirect to admin.php for admin users
+            echo json_encode([
+                'success' => true,
+                'message' => 'Login successful',
+                'username' => $username,
+                'redirect' => 'admin.php' // Admin user redirect
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
+        }
+        $stmt_admin->close();
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
+    }
 }
 
-$stmt->close();
+// Close database connection
 $conn->close();
 ?>

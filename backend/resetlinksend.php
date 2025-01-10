@@ -7,8 +7,8 @@ use PHPMailer\PHPMailer\Exception;
 // Start the session
 session_start();
 
-// Function to send a confirmation email
-function sendConfirmationEmail($email, $username) {
+// Function to send password reset email
+function sendPasswordResetEmail($email, $username, $resetToken) {
     $mail = new PHPMailer(true);
 
     try {
@@ -23,17 +23,21 @@ function sendConfirmationEmail($email, $username) {
 
         // Recipients
         $mail->setFrom('no-reply@yourdomain.com', 'Restore APP'); // Set sender's address
-        $mail->addAddress($email, $username); // Add a recipient
+        $mail->addAddress($email, $username); // Add recipient's email and name
 
         // Content
         $mail->isHTML(true); // Set email format to HTML
-        $mail->Subject = 'Registration Success'; // Email subject
+        $mail->Subject = 'Password Reset Request'; // Email subject
+        $resetLink = "http://yourdomain.com/reset_password.php?token=" . $resetToken; // Replace with your actual domain and reset script
         $mail->Body = '
             <html>
             <body style="font-family: Arial, sans-serif; background-color: #f6f6f6; padding: 20px;">
                 <div style="background-color: #ffffff; padding: 20px; border-radius: 5px;">
-                    <h2 style="color: #333333;">Thank You for Connecting with Us!' . htmlspecialchars($username) . '!</h2>
-                    <p style="color: #555555;">We appreciate your interest and are excited to have you with us.</p>
+                    <h2 style="color: #333333;">Password Reset Request</h2>
+                    <p style="color: #555555;">Hello ' . htmlspecialchars($username) . ',</p>
+                    <p style="color: #555555;">We received a request to reset your password. Please click the link below to reset your password:</p>
+                    <p><a href="' . $resetLink . '" style="background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px;">Reset Your Password</a></p>
+                    <p style="color: #777777;">If you did not request a password reset, please ignore this email.</p>
                     <p style="color: #777777;">Best regards,<br>ReStore</p>
                 </div>
             </body>
@@ -48,3 +52,4 @@ function sendConfirmationEmail($email, $username) {
         return false;
     }
 }
+?>

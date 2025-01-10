@@ -17,7 +17,7 @@ function sendOtpEmail($email, $otp) {
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
-        $mail->setFrom('from@example.com', 'Your Name');
+        $mail->setFrom('from@example.com', 'ReStore APP');
         $mail->addAddress($email);
 
         $mail->isHTML(true);
@@ -43,7 +43,7 @@ function sendOtpEmail($email, $otp) {
         </head>
     <body>
        <div class="container">
-          <h1>Your OTP Code</h1>
+          <h1></h1>
           <p>Dear User,</p>
           <p>Your OTP code is: <span class="otp">' . htmlspecialchars($otp) . '</span></p>
           <p>Please enter this code to complete your verification.</p>
