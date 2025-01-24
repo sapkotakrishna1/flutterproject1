@@ -27,6 +27,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   String userName = '';
+  String email = '';
   List<dynamic> posts = [];
   bool isLoading = true;
 
@@ -105,12 +106,19 @@ class _HomePageState extends State<HomePage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => AddObjPage(username: widget.username)),
+            builder: (context) => AddObjPage(
+                  username: widget.username,
+                  email: widget.email,
+                )),
       );
     } else if (index == 2) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const AddCartPage()),
+        MaterialPageRoute(
+            builder: (context) => AddCartPage(
+                  username: widget.username,
+                  email: widget.email,
+                )),
       );
     }
   }
@@ -215,6 +223,7 @@ class _HomePageState extends State<HomePage> {
                                     username: widget.username,
                                     email: widget.email,
                                     id: widget.id,
+                                    postid: widget.id,
                                   ),
                                 ),
                               );

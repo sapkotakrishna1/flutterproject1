@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'config.dart';
 import 'package:http/http.dart' as http;
+import 'config.dart';
 import 'otpinput.dart'; // Import OTP input page
 
 class RegisterPage extends StatefulWidget {
@@ -17,21 +17,19 @@ class _RegisterPageState extends State<RegisterPage> {
   final _contactController = TextEditingController();
   final _passwordController = TextEditingController();
   final _locationController = TextEditingController();
-  final _idController = TextEditingController(); // Define id controller
+  final _idController = TextEditingController();
 
   String? _selectedGender;
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false; // Loading state
-  bool _isPasswordVisible = false; // Password visibility toggle
-  bool _isPasswordFieldEmpty = true; // Track if password field is empty
+  bool _isLoading = false;
+  bool _isPasswordVisible = false;
+  bool _isPasswordFieldEmpty = true;
 
   final List<String> genders = ['Male', 'Female', 'Other'];
 
   @override
   void initState() {
     super.initState();
-
-    // Add listener to check for changes in the password field
     _passwordController.addListener(() {
       setState(() {
         _isPasswordFieldEmpty = _passwordController.text.isEmpty;
@@ -45,59 +43,45 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  // Registration function
   Future<void> _register() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
-        _isLoading = true; // Set loading to true
+        _isLoading = true;
       });
 
       try {
-        // Sending registration data to the server
         final response = await http.post(
-          Uri.parse(
-              '${Config.baseUrl}${Config.register}'), // Replace with your PHP logout API URL
+          Uri.parse('${Config.baseUrl}${Config.register}'),
           headers: <String, String>{
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: {
             'username': _usernameController.text,
             'email': _emailController.text,
-            'location': _locationController.text, // Send location value
+            'location': _locationController.text,
             'gender': _selectedGender ?? '',
             'contact': _contactController.text,
             'password': _passwordController.text,
           },
         );
 
-        // Log the full response to debug issues
-        print('Response Status: ${response.statusCode}');
-        print('Response Body: ${response.body}'); // For debugging
-
         if (response.statusCode == 200) {
           final responseBody = jsonDecode(response.body);
 
-          // Check the response structure carefully
           if (responseBody['message'] ==
               'This email is already associated with an account.') {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(responseBody['message'])),
-            );
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(responseBody['message'])));
           } else if (responseBody['status'] == 'success') {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Please check your email for Verify OTP.')),
-            );
-
-            // After successful registration, navigate to OTP input page
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Please check your email for Verify OTP.')));
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => OtpInputPage(
                   email: _emailController.text,
                   username: _usernameController.text,
                   password: _passwordController.text,
-                  id: _idController
-                      .text, // Assuming there's a controller for id
+                  id: _idController.text,
                   location: _locationController.text,
                   gender: _selectedGender ?? '',
                   userId: '',
@@ -106,34 +90,26 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             );
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content:
-                      Text('Failed to register: ${responseBody['message']}')),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content:
+                    Text('Failed to register: ${responseBody['message']}')));
           }
         } else {
-          // Handle unexpected status code
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content:
-                    Text('Error: ${response.statusCode} - ${response.body}')),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content:
+                  Text('Error: ${response.statusCode} - ${response.body}')));
         }
       } catch (e) {
-        // Catch network or unexpected errors
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error occurred: $e')),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error occurred: $e')));
       } finally {
         setState(() {
-          _isLoading = false; // Reset loading state after response
+          _isLoading = false;
         });
       }
     }
   }
 
-  // Validation functions for form fields
   String? _validateUsername(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a username';
@@ -181,168 +157,201 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Padding(
-          padding: EdgeInsets.only(top: 25), // Adjust top padding
-          child: Text(
-            'Register',
-            style: TextStyle(fontSize: 24), // Adjust font size
-          ),
+        title: const Text('Register'),
+        centerTitle: true, // Centers the title
+        backgroundColor:
+            Colors.blue[50], // Match the background color of the app
+        elevation: 0, // Optional: Remove the shadow for a seamless look
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+                context); // This will pop the current page from the stack
+          },
         ),
-        centerTitle: true,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(35.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 223, 217, 217),
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 8.0,
-                  offset: Offset(0, 4),
-                ),
-              ],
+      backgroundColor: Colors.blue[50], // Light blue background
+      body: Stack(
+        children: [
+          // Background image (ensure the image path is correct)
+          Positioned.fill(
+            child: Image.asset(
+              'assets/image.jpg', // Ensure you add the image to your project assets
+              fit: BoxFit.cover,
             ),
-            padding: const EdgeInsets.all(24.0),
-            child: Form(
-              key: _formKey,
+          ),
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  // Username field
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      prefixIcon: const Icon(Icons.person),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    validator: _validateUsername,
+                  // Logo or Icon (Optional)
+                  const Icon(
+                    Icons.person,
+                    size: 120,
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 16),
-                  // Email field
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: const Icon(Icons.email),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Welcome to Register!',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    validator: _validateEmail,
                   ),
-                  const SizedBox(height: 16),
-                  // Location field
-                  TextFormField(
-                    controller: _locationController, // Location field
-                    decoration: InputDecoration(
-                      labelText: 'Location',
-                      prefixIcon: const Icon(Icons.location_on),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
+                  const SizedBox(height: 40),
+
+                  // Card with the form
+                  Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your location';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  // Gender dropdown
-                  DropdownButtonFormField<String>(
-                    value: _selectedGender,
-                    decoration: InputDecoration(
-                      labelText: 'Gender',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    items: genders.map((String gender) {
-                      return DropdownMenuItem<String>(
-                        value: gender,
-                        child: Text(gender),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedGender = newValue;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Please select your gender';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  // Contact number field
-                  TextFormField(
-                    controller: _contactController,
-                    decoration: InputDecoration(
-                      labelText: 'Contact Number',
-                      prefixIcon: const Icon(Icons.phone),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    validator: _validateContact,
-                  ),
-                  const SizedBox(height: 16),
-                  // Password field
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      suffixIcon: !_isPasswordFieldEmpty
-                          ? IconButton(
-                              icon: Icon(
-                                _isPasswordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            // Username Field
+                            _buildTextField('Username', _usernameController,
+                                Icons.person, _validateUsername),
+                            const SizedBox(height: 20),
+
+                            // Email Field
+                            _buildTextField('Email', _emailController,
+                                Icons.email, _validateEmail),
+                            const SizedBox(height: 20),
+
+                            // Location Field
+                            _buildTextField('Location', _locationController,
+                                Icons.location_on, (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your location';
+                              }
+                              return null;
+                            }),
+                            const SizedBox(height: 20),
+
+                            // Gender Dropdown
+                            DropdownButtonFormField<String>(
+                              value: _selectedGender,
+                              decoration: InputDecoration(
+                                labelText: 'Gender',
+                                labelStyle:
+                                    const TextStyle(color: Colors.blueAccent),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
                               ),
-                              onPressed: () {
+                              items: genders.map((String gender) {
+                                return DropdownMenuItem<String>(
+                                    value: gender, child: Text(gender));
+                              }).toList(),
+                              onChanged: (String? newValue) {
                                 setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible;
+                                  _selectedGender = newValue;
                                 });
                               },
-                            )
-                          : null, // Only show icon when password is not empty
-                    ),
-                    obscureText: !_isPasswordVisible,
-                    validator: _validatePassword,
-                  ),
-                  const SizedBox(height: 24),
-                  // Register button
-                  _isLoading
-                      ? const CircularProgressIndicator()
-                      : ElevatedButton(
-                          onPressed: _register,
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              validator: (value) => value == null
+                                  ? 'Please select your gender'
+                                  : null,
                             ),
-                          ),
-                          child: const Text('Register'),
+                            const SizedBox(height: 20),
+
+                            // Contact Number Field
+                            _buildTextField(
+                                'Contact Number',
+                                _contactController,
+                                Icons.phone,
+                                _validateContact),
+                            const SizedBox(height: 20),
+
+                            // Password Field
+                            _buildPasswordField(),
+                            const SizedBox(height: 30),
+
+                            // Register Button
+                            ElevatedButton(
+                              onPressed: _isLoading ? null : _register,
+                              style: ElevatedButton.styleFrom(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                backgroundColor: Colors.blueAccent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                minimumSize: const Size(double.infinity, 50),
+                              ),
+                              child: _isLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : const Text(
+                                      'Register',
+                                      style: TextStyle(
+                                          fontSize: 18, color: Colors.white),
+                                    ),
+                            ),
+                            const SizedBox(height: 20),
+                          ],
                         ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller,
+      IconData icon, String? Function(String?) validator) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.blueAccent),
+        prefixIcon: Icon(icon, color: Colors.blueAccent),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
         ),
       ),
+      validator: validator,
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return TextFormField(
+      controller: _passwordController,
+      decoration: InputDecoration(
+        labelText: 'Password',
+        labelStyle: const TextStyle(color: Colors.blueAccent),
+        prefixIcon: const Icon(Icons.lock, color: Colors.blueAccent),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        suffixIcon: !_isPasswordFieldEmpty
+            ? IconButton(
+                icon: Icon(_isPasswordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              )
+            : null,
+      ),
+      obscureText: !_isPasswordVisible,
+      validator: _validatePassword,
     );
   }
 }

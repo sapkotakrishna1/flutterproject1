@@ -55,7 +55,7 @@ class _OtpInputPageState extends State<OtpInputPage> {
 
       final response = await http.post(
         Uri.parse(
-            '${Config.baseUrl}${Config.login}'), // Replace with your PHP logout API URL
+            '${Config.baseUrl}${Config.verifyotpregister}'), // Replace with your PHP logout API URL
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "id": widget.id,

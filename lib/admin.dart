@@ -111,8 +111,7 @@ class AdminPage extends StatelessWidget {
             child: Container(
               width: double.infinity, // Container takes up full width
               height: 140, // Adjusted height for better spacing
-              color:
-                  const Color.fromARGB(255, 177, 165, 165), // Container color
+              color: Color.fromARGB(255, 219, 208, 208), // Container color
               child: Padding(
                 padding:
                     const EdgeInsets.all(16.0), // Padding for better spacing
@@ -214,8 +213,7 @@ class AdminPage extends StatelessWidget {
             child: Container(
               width: double.infinity, // Container takes up full width
               height: 140, // Adjusted height for better spacing
-              color:
-                  const Color.fromARGB(255, 177, 165, 165), // Container color
+              color: Color.fromARGB(255, 216, 206, 206), // Container color
               child: Padding(
                 padding:
                     const EdgeInsets.all(16.0), // Padding for better spacing

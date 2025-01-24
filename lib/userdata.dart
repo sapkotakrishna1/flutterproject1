@@ -27,7 +27,7 @@ class _UserDataPageState extends State<UserDataPage> {
   // Function to fetch user data from the API
   Future<void> _fetchUserData() async {
     final url = Uri.parse(
-        '${Config.baseUrl}${Config.login}'); // Replace with your PHP logout API URL
+        '${Config.baseUrl}${Config.getuserdata}'); // Replace with your PHP logout API URL
 
     try {
       final response = await http.get(url);

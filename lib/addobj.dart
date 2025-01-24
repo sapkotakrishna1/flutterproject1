@@ -10,8 +10,9 @@ import 'dart:typed_data'; // For working with byte data on the web
 
 class AddObjPage extends StatefulWidget {
   final String username;
+  final String email;
 
-  const AddObjPage({super.key, required this.username});
+  const AddObjPage({super.key, required this.username, required this.email});
 
   @override
   _AddObjPageState createState() => _AddObjPageState();
@@ -27,11 +28,13 @@ class _AddObjPageState extends State<AddObjPage> {
   List<Uint8List> _selectedWebImages = []; // For web images as byte data
 
   late String _username;
+  late String _email;
 
   @override
   void initState() {
     super.initState();
     _username = widget.username; // Get username from the widget
+    _email = widget.email; // Get email from the widget
   }
 
   // Method to select images from gallery or camera, platform-dependent
@@ -130,6 +133,7 @@ class _AddObjPageState extends State<AddObjPage> {
     request.fields['price'] = price.toString();
     request.fields['age'] = age.toString();
     request.fields['username'] = _username;
+    request.fields['email'] = _email;
 
     try {
       // Add images for mobile platform (Base64-encoded)

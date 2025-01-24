@@ -1,128 +1,156 @@
+import 'dart:convert'; // For decoding Base64 images
+//import 'dart:typed_data'; // Required for Image.memory()
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'config.dart'; // Assuming you have a config file for base URLs
 
 class AddCartPage extends StatefulWidget {
-  const AddCartPage({super.key});
+  final String username;
+  final String email;
+
+  const AddCartPage({super.key, required this.username, required this.email});
 
   @override
   _AddCartPageState createState() => _AddCartPageState();
 }
 
 class _AddCartPageState extends State<AddCartPage> {
-  // List to store cart items
-  List<Map<String, dynamic>> cartItems = [];
+  List<Map<String, dynamic>>? posts; // List to store posts
+  bool isLoading = true; // To handle loading state
+  String errorMessage = ''; // To store error message
 
-  // Controllers and variables for form inputs
-  final TextEditingController itemNameController = TextEditingController();
-  int quantity = 1;
+  @override
+  void initState() {
+    super.initState();
+    _fetchCartItems(); // Fetch cart items from the server on page load
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add to Cart'),
-        backgroundColor: Colors.deepPurple,
+        title: const Text('Fav Cart'),
+        backgroundColor: Colors.blue,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Item Name Input Field
-            TextField(
-              controller: itemNameController,
-              decoration: const InputDecoration(
-                labelText: 'Item Name',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator()) // Show loading spinner
+          : errorMessage.isNotEmpty
+              ? Center(
+                  child: Text(errorMessage,
+                      style: const TextStyle(color: Colors.red)))
+              : posts == null || posts!.isEmpty
+                  ? const Center(child: Text('No Cart Added'))
+                  : ListView.builder(
+                      itemCount: posts!.length,
+                      itemBuilder: (context, index) {
+                        final post = posts![index];
 
-            // Quantity Dropdown
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Quantity:',
-                  style: TextStyle(fontSize: 16),
-                ),
-                DropdownButton<int>(
-                  value: quantity,
-                  items: List.generate(10, (index) => index + 1)
-                      .map((value) => DropdownMenuItem<int>(
-                            value: value,
-                            child: Text(value.toString()),
-                          ))
-                      .toList(),
-                  onChanged: (newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        quantity = newValue;
-                      });
-                    }
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+                        // // Decode the base64 image if present
+                        // Uint8List? decodedImage;
+                        // if (post['image'] != null) {
+                        //   decodedImage = base64Decode(post['image']);
+                        // }
 
-            // Add to Cart Button
-            ElevatedButton(
-              onPressed: () {
-                final itemName = itemNameController.text;
-
-                // If item name is not empty, add to cart
-                if (itemName.isNotEmpty) {
-                  setState(() {
-                    cartItems.add({
-                      'name': itemName,
-                      'quantity': quantity,
-                    });
-                  });
-
-                  // Clear the text field for the next item
-                  itemNameController.clear();
-
-                  // Show a Snackbar for confirmation
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('$itemName added to cart!')),
-                  );
-                }
-              },
-              child: const Text('Add to Cart'),
-            ),
-            const SizedBox(height: 20),
-
-            // Display Cart Items
-            if (cartItems.isNotEmpty) ...[
-              const Text(
-                'Cart Items:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              // ListView to show cart items
-              Expanded(
-                child: ListView.builder(
-                  itemCount: cartItems.length,
-                  itemBuilder: (context, index) {
-                    final cartItem = cartItems[index];
-                    return ListTile(
-                      title: Text(cartItem['name']),
-                      subtitle: Text('Quantity: ${cartItem['quantity']}'),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.remove_circle_outline),
-                        onPressed: () {
-                          setState(() {
-                            cartItems.removeAt(index);
-                          });
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
+                        return Card(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 16),
+                          elevation: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                    'Product Name: ${post['product_name'] ?? 'N/A'}'),
+                                const SizedBox(height: 10),
+                                Text('Price: \$${post['price'] ?? 'N/A'}'),
+                                const SizedBox(height: 10),
+                                Text('Username: ${post['username'] ?? 'N/A'}'),
+                                const SizedBox(height: 10),
+                                post['image'] != null
+                                    ? Image.memory(
+                                        base64Decode(post['image']),
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : const SizedBox.shrink(),
+                                // Delete button (optional)
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red),
+                                    onPressed: () =>
+                                        _deletePost(post['id'], index),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
     );
+  }
+
+// Fetch posts from the API based on the username (email)
+  Future<void> _fetchCartItems() async {
+    final url = Uri.parse(
+        '${Config.baseUrl}${Config.getcartitems}?email=${widget.email}'); // Include username in the API request URL
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      try {
+        var jsonData = json.decode(response.body);
+        if (jsonData is List) {
+          setState(() {
+            posts = List<Map<String, dynamic>>.from(jsonData);
+            isLoading = false;
+          });
+        } else if (jsonData is Map && jsonData.containsKey('error')) {
+          setState(() {
+            errorMessage = jsonData['error'];
+            isLoading = false;
+          });
+        }
+      } catch (e) {
+        setState(() {
+          errorMessage = 'Failed to parse server response.';
+          isLoading = false;
+        });
+      }
+    } else {
+      setState(() {
+        errorMessage =
+            'Failed to load data. Server returned status code ${response.statusCode}';
+        isLoading = false;
+      });
+    }
+  }
+
+  // Delete post from the cart
+  Future<void> _deletePost(int postId, int index) async {
+    final url =
+        Uri.parse('${Config.baseUrl}${Config.removecart}'); // Your API endpoint
+    final response = await http.delete(url, body: {'id': postId.toString()});
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      if (responseData['status'] == 'success') {
+        setState(() {
+          posts!.removeAt(index);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Post deleted successfully')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to delete post')));
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Failed to delete. Status: ${response.statusCode}')));
+    }
   }
 }

@@ -6,8 +6,8 @@ import 'home.dart';
 import 'profile.dart';
 import 'reg.dart';
 import 'config.dart';
-import 'forgot_password.dart'; // Import the ForgotPasswordPage
-import 'admin.dart'; // Import the AdminPage
+import 'forgot_password.dart';
+import 'admin.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,25 +20,19 @@ class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isPasswordVisible = false;
   bool _isLoading = false;
-  bool _isPasswordVisible = false; // Toggle for password visibility
-  bool _isPasswordEntered = false; // Track if the user started typing password
 
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
+  // Login function with async/await
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      setState(() => _isLoading = true);
+      setState(() {
+        _isLoading = true;
+      });
 
       try {
         final response = await http.post(
-          Uri.parse(
-              '${Config.baseUrl}${Config.login}'), // Replace with your PHP logout API URL
+          Uri.parse('${Config.baseUrl}${Config.login}'),
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
           body: jsonEncode({
             "email": _usernameController.text,
@@ -46,58 +40,54 @@ class _LoginPageState extends State<LoginPage> {
           }),
         );
 
-        final responseData = json.decode(response.body);
-        print('Response: $responseData'); // Debug statement
-
         if (response.statusCode == 200) {
-          String username = responseData['username'] ?? '';
-          String email = _usernameController.text;
-          String userId =
-              responseData['userId'] ?? ''; // Capture user ID from response
-          String redirectTo = responseData['redirect'] ?? '';
-
-          // Store in SharedPreferences
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('email', email);
-          await prefs.setString('username', username);
-          await prefs.setString('userId', userId); // Store user ID
-
-          _showSnackBar(responseData['message'] ?? 'Success');
-
-          // Navigate based on response
-          _handleNavigation(responseData, username, email, userId, redirectTo);
+          final responseData = json.decode(response.body);
+          _handleNavigation(responseData);
         } else {
-          _showSnackBar('Error: ${responseData['message'] ?? 'Server error'}');
+          _showSnackBar('Error: ${response.body}');
         }
       } catch (error) {
-        print('Error: $error'); // Log the error for debugging
         _showSnackBar('An error occurred: $error');
       } finally {
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
 
-  void _handleNavigation(Map<String, dynamic> responseData, String username,
-      String email, String userId, String redirectTo) {
+  // Navigate based on response
+  void _handleNavigation(Map<String, dynamic> responseData) {
+    String username = responseData['username'] ?? '';
+    String email = _usernameController.text;
+    String userId = responseData['userId'] ?? '';
+    String redirectTo = responseData['redirect'] ?? '';
+
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setString('email', email);
+      prefs.setString('username', username);
+      prefs.setString('userId', userId);
+    });
+
     if (responseData['success'] == true) {
-      // Navigate to home or profile page based on response
       if (redirectTo == 'home.php') {
-        Navigator.of(context).pushReplacement(
+        Navigator.pushReplacement(
+          context,
           MaterialPageRoute(
             builder: (context) =>
                 HomePage(username: username, email: email, id: userId),
           ),
         );
       } else if (redirectTo == 'admin.php') {
-        // If the user is an admin, redirect to the admin page
-        Navigator.of(context).pushReplacement(
+        Navigator.pushReplacement(
+          context,
           MaterialPageRoute(
             builder: (context) => AdminPage(username: username, email: email),
           ),
         );
       } else {
-        Navigator.of(context).pushReplacement(
+        Navigator.pushReplacement(
+          context,
           MaterialPageRoute(
             builder: (context) => ProfilePage(userName: username, email: email),
           ),
@@ -108,18 +98,21 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  // Show SnackBar for messages
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), duration: const Duration(seconds: 3)),
     );
   }
 
+  // Navigate to Register Page
   void _navigateToRegister() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const RegisterPage()),
     );
   }
 
+  // Navigate to Forgot Password Page
   void _navigateToForgotPassword() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
@@ -127,108 +120,132 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Login', style: TextStyle(fontSize: 24)),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
+      backgroundColor: Colors.blue[50],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              const Icon(
+                Icons.person,
+                size: 120,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Welcome Back!',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
               const SizedBox(height: 40),
+
+              // Login Form Card
               Card(
-                elevation: 5,
+                elevation: 10,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Form(
                     key: _formKey,
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
+                        // Email Field
                         TextFormField(
                           controller: _usernameController,
                           decoration: InputDecoration(
                             labelText: 'Email',
-                            prefixIcon: const Icon(Icons.email),
+                            labelStyle:
+                                const TextStyle(color: Colors.blueAccent),
+                            prefixIcon: const Icon(Icons.email,
+                                color: Colors.blueAccent),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                           validator: (value) => value?.isEmpty == true
                               ? 'Please enter an email'
                               : null,
                         ),
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 20),
+
+                        // Password Field
                         TextFormField(
                           controller: _passwordController,
-                          obscureText: !_isPasswordVisible, // Toggle visibility
-                          onChanged: (text) {
-                            setState(() {
-                              _isPasswordEntered = text
-                                  .isNotEmpty; // Track typing in password field
-                            });
-                          },
+                          obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            prefixIcon: const Icon(Icons.lock),
+                            labelStyle:
+                                const TextStyle(color: Colors.blueAccent),
+                            prefixIcon: const Icon(Icons.lock,
+                                color: Colors.blueAccent),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                            suffixIcon: _isPasswordEntered
-                                ? IconButton(
-                                    icon: Icon(
-                                      _isPasswordVisible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _isPasswordVisible =
-                                            !_isPasswordVisible;
-                                      });
-                                    },
-                                  )
-                                : null,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
                           ),
                           validator: (value) => value?.isEmpty == true
                               ? 'Please enter a password'
                               : null,
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 30),
+
+                        // Login Button
                         ElevatedButton(
                           onPressed: _isLoading ? null : _login,
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 15),
+                            backgroundColor: Colors.blueAccent,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(15),
                             ),
+                            minimumSize: const Size(double.infinity, 50),
                           ),
                           child: _isLoading
                               ? const CircularProgressIndicator(
-                                  color: Color.fromARGB(255, 128, 100, 100))
+                                  color: Colors.white)
                               : const Text('Login',
-                                  style: TextStyle(fontSize: 16)),
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white)),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
+
+                        // Register and Forgot Password Links
                         TextButton(
                           onPressed: _navigateToRegister,
                           child: const Text('New here? Register',
-                              style: TextStyle(color: Colors.blue)),
+                              style: TextStyle(color: Colors.blueAccent)),
                         ),
                         const SizedBox(height: 10),
                         TextButton(
-                          onPressed:
-                              _navigateToForgotPassword, // Forgot Password
+                          onPressed: _navigateToForgotPassword,
                           child: const Text('Forgot Password?',
-                              style: TextStyle(color: Colors.blue)),
+                              style: TextStyle(color: Colors.blueAccent)),
                         ),
                       ],
                     ),
