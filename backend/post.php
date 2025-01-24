@@ -9,7 +9,7 @@ header('Content-Type: application/json');
 include 'dbconnection.php';
 
 // Prepare the SQL query to fetch data from the database
-$sql = "SELECT id, name, description, price, age, username, images, created_at FROM objects";
+$sql = "SELECT id, name, description, price, age, username, images, created_at , email FROM objects";
 $result = $conn->query($sql);
 
 $objects = [];

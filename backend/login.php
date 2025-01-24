@@ -3,7 +3,8 @@ session_start();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+// Allow specific headers (e.g., Content-Type, Authorization, etc.)
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
