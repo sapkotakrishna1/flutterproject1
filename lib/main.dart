@@ -15,7 +15,7 @@ class Restore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return KhaltiScope(
-      publicKey: '2ec27615abbf4d38852661e2ba62ca9b', // Your Khalti public key
+      publicKey: '6b65ce324568434bb08d6d51a88e5c18', // Your Khalti public key
       builder: (context, navigatorKey) {
         return MaterialApp(
           navigatorKey: navigatorKey,
@@ -24,23 +24,18 @@ class Restore extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: const LoginPage(), // Set LoginPage as the home
+          home: const LoginPage(),
           routes: {
-            '/reg': (context) =>
-                const RegisterPage(), // Define route for registration page
-            '/kpg': (context) =>
-                const PaymentSuccessPage(), // Add route for '/kpg' (payment success page)
+            '/reg': (context) => const RegisterPage(),
+            '/kpg': (context) => const PaymentSuccessPage(),
           },
-          debugShowCheckedModeBanner: false, // Remove the debug banner
-
-          // Localization delegates and supported locales
+          debugShowCheckedModeBanner: false,
           localizationsDelegates: const [
-            KhaltiLocalizations.delegate, // Add Khalti localization delegate
+            KhaltiLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-
           supportedLocales: const [
             Locale('en', 'US'), // English
             Locale('ne', 'NP'), // Nepali

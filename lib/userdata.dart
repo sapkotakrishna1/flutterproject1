@@ -4,19 +4,18 @@ import 'config.dart';
 import 'package:http/http.dart' as http;
 
 class UserDataPage extends StatefulWidget {
-  const UserDataPage(
-      {super.key, required this.username}); // Pass username in constructor
+  const UserDataPage({super.key, required this.username});
 
-  final String username; // Declare a username variable
+  final String username;
 
   @override
   _UserDataPageState createState() => _UserDataPageState();
 }
 
 class _UserDataPageState extends State<UserDataPage> {
-  List<Map<String, dynamic>>? usersData; // List to hold user data
-  bool isLoading = true; // To show loading spinner while fetching data
-  String errorMessage = ''; // To store error message if any
+  List<Map<String, dynamic>>? usersData;
+  bool isLoading = true;
+  String errorMessage = '';
 
   @override
   void initState() {
@@ -24,30 +23,27 @@ class _UserDataPageState extends State<UserDataPage> {
     _fetchUserData();
   }
 
-  // Function to fetch user data from the API
+  // Fetch user data
   Future<void> _fetchUserData() async {
-    final url = Uri.parse(
-        '${Config.baseUrl}${Config.getuserdata}'); // Replace with your PHP logout API URL
+    final url = Uri.parse('${Config.baseUrl}${Config.getuserdata}');
+
+    setState(() {
+      isLoading = true;
+      errorMessage = '';
+    });
 
     try {
       final response = await http.get(url);
 
-      // Check the status code of the response
       if (response.statusCode == 200) {
-        print(
-            'Response body: ${response.body}'); // Print the full response for debugging
-
-        // Decode the JSON
         var jsonData = json.decode(response.body);
 
-        // Check if the API response contains an error
         if (jsonData is Map && jsonData.containsKey('error')) {
           setState(() {
             errorMessage = jsonData['error'];
             isLoading = false;
           });
         } else if (jsonData is List) {
-          // Handle the case where the response is a list of users
           setState(() {
             usersData = List<Map<String, dynamic>>.from(jsonData);
             isLoading = false;
@@ -59,16 +55,12 @@ class _UserDataPageState extends State<UserDataPage> {
           });
         }
       } else {
-        // Handle non-200 responses
-        print('Error: Server returned status code ${response.statusCode}');
         setState(() {
-          errorMessage = 'Server returned status code ${response.statusCode}';
+          errorMessage = 'Server error: ${response.statusCode}';
           isLoading = false;
         });
       }
     } catch (error) {
-      // Handle any errors during the request
-      print('Error: $error');
       setState(() {
         errorMessage = 'Failed to load data: $error';
         isLoading = false;
@@ -76,32 +68,72 @@ class _UserDataPageState extends State<UserDataPage> {
     }
   }
 
-  // Function to handle Delete operation
+  // Confirm and delete user
+  void _confirmDeleteUser(String userId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Delete"),
+          content: const Text("Are you sure you want to delete this user?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _deleteUser(userId);
+              },
+              child: const Text("Delete", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// Delete user and go back
   Future<void> _deleteUser(String userId) async {
-    final url = Uri.parse('http://192.168.1.81/myapp_api/deletedata.php');
+    final url = Uri.parse('${Config.baseUrl}${Config.deletetdata}');
+
+    setState(() {
+      isLoading = true;
+      errorMessage = '';
+    });
+
     try {
       final response = await http.post(url, body: {'id': userId});
 
       if (response.statusCode == 200) {
-        print('User deleted: ${response.body}');
-        // After deletion, refresh the user data
-        _fetchUserData();
+        var responseJson = json.decode(response.body);
+
+        if (responseJson['status'] == 'success') {
+          // Go back to the previous screen after deletion
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        } else {
+          setState(() {
+            errorMessage = 'Failed to delete user: ${responseJson['message']}';
+            isLoading = false;
+          });
+        }
       } else {
-        print('Failed to delete user: ${response.statusCode}');
+        setState(() {
+          errorMessage =
+              'Failed to delete user. Status code: ${response.statusCode}';
+          isLoading = false;
+        });
       }
     } catch (error) {
-      print('Error deleting user: $error');
+      setState(() {
+        Navigator.pop(context);
+        errorMessage = 'Error deleting user: $error';
+        isLoading = false;
+      });
     }
-  }
-
-  // Function to navigate to Edit User screen
-  void _navigateToEdit(String userId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditUserPage(userId: userId),
-      ),
-    );
   }
 
   @override
@@ -112,20 +144,17 @@ class _UserDataPageState extends State<UserDataPage> {
         backgroundColor: Colors.blue,
       ),
       body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator()) // Show loading spinner
+          ? const Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
               ? Center(
                   child: Text(errorMessage,
                       style: const TextStyle(color: Colors.red)))
               : usersData == null || usersData!.isEmpty
-                  ? const Center(child: Text('No user data found')) // No data
+                  ? const Center(child: Text('No user data found'))
                   : ListView.builder(
-                      itemCount:
-                          usersData!.length, // Number of items in the list
+                      itemCount: usersData!.length,
                       itemBuilder: (context, index) {
-                        final user =
-                            usersData![index]; // Get user data at current index
+                        final user = usersData![index];
 
                         return Card(
                           margin: const EdgeInsets.symmetric(
@@ -147,19 +176,10 @@ class _UserDataPageState extends State<UserDataPage> {
                                   children: [
                                     ElevatedButton(
                                       onPressed: () {
-                                        _navigateToEdit(user[
-                                            'id']); // Navigate to Edit page
-                                      },
-                                      child: const Text('Edit'),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _deleteUser(user['id']); // Delete user
+                                        _confirmDeleteUser(user['id']);
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Colors.red, // Red button for delete
+                                        backgroundColor: Colors.red,
                                       ),
                                       child: const Text('Delete'),
                                     ),
@@ -171,26 +191,6 @@ class _UserDataPageState extends State<UserDataPage> {
                         );
                       },
                     ),
-    );
-  }
-}
-
-// Edit User Page (for editing user data)
-class EditUserPage extends StatelessWidget {
-  final String userId;
-
-  const EditUserPage({super.key, required this.userId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit User'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text('Editing user with ID: $userId'), // Placeholder UI
-      ),
     );
   }
 }

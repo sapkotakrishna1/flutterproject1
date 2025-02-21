@@ -209,7 +209,7 @@ class _AddObjPageState extends State<AddObjPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Object'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Color.fromARGB(141, 167, 145, 204),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -221,7 +221,7 @@ class _AddObjPageState extends State<AddObjPage> {
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: Colors.deepPurple,
+                  color: const Color.fromARGB(255, 186, 172, 211),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Text(
@@ -286,7 +286,7 @@ class _AddObjPageState extends State<AddObjPage> {
                 icon: const Icon(Icons.image),
                 label: const Text('Pick Images'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
+                  backgroundColor: const Color.fromARGB(255, 163, 150, 185),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   textStyle: const TextStyle(fontSize: 16),
                   shape: RoundedRectangleBorder(
@@ -335,7 +335,7 @@ class _AddObjPageState extends State<AddObjPage> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _uploadImages,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
+                  backgroundColor: Color.fromARGB(255, 206, 203, 211),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   textStyle: const TextStyle(fontSize: 16),
                   shape: RoundedRectangleBorder(

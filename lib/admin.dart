@@ -256,7 +256,7 @@ class AdminPage extends StatelessWidget {
                                   SizedBox(
                                       height: 5), // Space between icon and text
                                   Text(
-                                    'Buy Data', // Text below the icon
+                                    'COD Data', // Text below the icon
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 12, // Font size for label

@@ -47,7 +47,7 @@ class _PaymentPageState extends State<PaymentPage> {
         headers: {
           'Content-Type': 'application/json',
           'Authorization':
-              'Bearer YOUR_KHALTI_PUBLIC_KEY', // Use Khalti API Key here
+              'c27615abbf4d38852661e2ba62ca9b', // Use Khalti API Key here
         },
       );
 

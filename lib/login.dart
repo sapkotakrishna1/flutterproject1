@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[50],
+      backgroundColor: Color.fromARGB(255, 164, 199, 224),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -139,15 +139,15 @@ class _LoginPageState extends State<LoginPage> {
               const Icon(
                 Icons.person,
                 size: 120,
-                color: Colors.white,
+                color: Color.fromARGB(255, 163, 159, 159),
               ),
               const SizedBox(height: 20),
               const Text(
-                'Welcome Back!',
+                'Welcome!',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Color.fromARGB(255, 163, 159, 159),
                 ),
               ),
               const SizedBox(height: 40),
@@ -242,11 +242,11 @@ class _LoginPageState extends State<LoginPage> {
                               style: TextStyle(color: Colors.blueAccent)),
                         ),
                         const SizedBox(height: 10),
-                        TextButton(
-                          onPressed: _navigateToForgotPassword,
-                          child: const Text('Forgot Password?',
-                              style: TextStyle(color: Colors.blueAccent)),
-                        ),
+                        //TextButton(
+                        //  onPressed: _navigateToForgotPassword,
+                        //  child: const Text('Forgot Password?',
+                        //      style: TextStyle(color: Colors.blueAccent)),
+                        //),
                       ],
                     ),
                   ),

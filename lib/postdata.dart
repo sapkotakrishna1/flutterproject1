@@ -180,9 +180,8 @@ class _PostDataPageState extends State<PostDataPage> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      // After successful purchase, navigate to the home page
+      Navigator.pop(context); // Pop to the previous page
     }
   }
 }

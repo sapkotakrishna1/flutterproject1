@@ -29,16 +29,19 @@ class BuyPage extends StatefulWidget {
 
 class _BuyPageState extends State<BuyPage> {
   final TextEditingController _commentController = TextEditingController();
+
   List<Map<String, dynamic>> comments =
       []; // List to store comments fetched from the database
   final Map<int, TextEditingController> _replyControllers =
       {}; // Map to handle replies
+  bool _isSoldOut = false;
 
   @override
   void initState() {
     super.initState();
     // Fetch the comments when the page loads
     _fetchComments();
+    _fetchPurchaseStatus(); // Fetch purchase status when the page loads
   }
 
   @override
@@ -110,44 +113,49 @@ class _BuyPageState extends State<BuyPage> {
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
                           color: Colors.deepPurple)),
-                  ElevatedButton(
-                    onPressed: () {
-                      String productName =
-                          widget.post['name']; // Get product name
+                  if (_isSoldOut)
+                    ElevatedButton(
+                      onPressed:
+                          null, // Disable the button if the item is sold out
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple),
+                      child: const Text('Sold Out',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color.fromARGB(255, 233, 6, 6),
+                            fontWeight: FontWeight.bold,
+                          )),
+                    )
+                  else
+                    ElevatedButton(
+                      onPressed: () {
+                        String productName =
+                            widget.post['name']; // Get product name
+                        double price =
+                            double.tryParse(widget.post['price'].toString()) ??
+                                0.0; // Parse price
+                        String postid =
+                            widget.post['id'].toString(); // Get post ID
+                        String username =
+                            widget.username; // Get the logged-in username
 
-                      // Ensure price is properly parsed as a double
-                      double price = double.tryParse(
-                              widget.post['price'].toString()) ??
-                          0.0; // Parsing to double, default to 0.0 if parsing fails
-
-                      String postid =
-                          widget.post['id'].toString(); // Get post ID
-                      String username =
-                          widget.username; // Get the logged-in username
-
-                      // Call the navigation method with proper types
-                      _navigateToUpdateInfoPage(
-                          context, username, productName, price, postid);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                    ),
-                    child: const Text(
-                      'Buy Now',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                  )
+                        _navigateToUpdateInfoPage(
+                            context, username, productName, price, postid);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple),
+                      child: const Text('Buy Now',
+                          style: TextStyle(fontSize: 16, color: Colors.white)),
+                    )
                 ],
               ),
               const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'NPR ${widget.post['price']}',
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
+                  Text('NPR ${widget.post['price']}',
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold)),
                 ],
               ),
               const SizedBox(height: 16),
@@ -172,10 +180,9 @@ class _BuyPageState extends State<BuyPage> {
                   IconButton(
                     icon: const Icon(Icons.send),
                     onPressed: () {
-                      // Pass the post id along with the comment when adding a comment
                       _addComment(); // Call the add comment function
                     },
-                  )
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -397,9 +404,74 @@ class _BuyPageState extends State<BuyPage> {
             );
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${data['message']}')),
-          );
+          //ScaffoldMessenger.of(context).showSnackBar(
+          //  SnackBar(content: Text('Error: ${data['message']}')),
+          //);
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to connect to the server.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  void _fetchPurchaseStatus() async {
+    final url = Uri.parse('${Config.baseUrl}${Config.fetchcodpurches}');
+
+    // Send request to fetch the purchase details for the given post ID
+    final response = await http.get(
+      url.replace(
+        queryParameters: {
+          'postid':
+              widget.post['id'].toString(), // Ensure correct post id is passed
+        },
+      ),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    );
+
+    try {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+
+        if (data['status'] == 'success') {
+          var purchaseData = data['data']; // Fetch the full record
+
+          // Extract relevant information from the response
+          String purchaseStatus =
+              purchaseData['status'] ?? 'unknown'; // Default value if null
+          String productName = purchaseData['product_name'] ??
+              'Unknown Product'; // Default value if null
+          String price =
+              purchaseData['price'] ?? '0.00'; // Default value if null
+          String address = purchaseData['address'] ??
+              'No address provided'; // Default value if null
+          String phone = purchaseData['phone'] ??
+              'No phone provided'; // Default value if null
+          String createdAt = purchaseData['created_at'] ??
+              'Unknown Date'; // Default value if null
+
+          // If purchase status is 'completed', disable the 'Buy Now' button and show 'Sold Out'
+          setState(() {
+            if (purchaseStatus == 'completed') {
+              _isSoldOut = true;
+            }
+          });
+
+          // You can use this data to update the UI, display the information, etc.
+          print('Product Name: $productName');
+          print('Price: $price');
+          print('Status: $purchaseStatus');
+          print('Address: $address');
+          print('Phone: $phone');
+          print('Created At: $createdAt');
+        } else {
+          //ScaffoldMessenger.of(context).showSnackBar(
+          //  SnackBar(content: Text('Error: ${data['message']}')),
+          //);
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

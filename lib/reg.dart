@@ -170,7 +170,8 @@ class _RegisterPageState extends State<RegisterPage> {
           },
         ),
       ),
-      backgroundColor: Colors.blue[50], // Light blue background
+      backgroundColor:
+          const Color.fromARGB(255, 147, 180, 204), // Light blue background
       body: Stack(
         children: [
           // Background image (ensure the image path is correct)
@@ -190,7 +191,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Icon(
                     Icons.person,
                     size: 120,
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 157, 142, 185),
                   ),
                   const SizedBox(height: 20),
                   const Text(
@@ -198,7 +199,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 153, 148, 199),
                     ),
                   ),
                   const SizedBox(height: 40),

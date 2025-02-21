@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:khalti_flutter/khalti_flutter.dart'; // Import Khalti SDK
-import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart'; // Import Google Maps package
+import 'package:geocoding/geocoding.dart'; // Import geocoding package
+import 'package:http/http.dart' as http; // Import HTTP package
+import 'package:myapp/config.dart';
 import 'dart:convert';
-import 'config.dart'; // Import the Config class
+import 'package:url_launcher/url_launcher.dart';
 
 class UpdateBuyInfoPage extends StatefulWidget {
   final String productName;
@@ -27,6 +29,21 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
   final TextEditingController _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isKhaltiSelected = false;
+  bool isMapSelected = false; // Flag to track if map is selected for address
+  bool isCodSelected = false; // Flag to track if Cash on Delivery is selected
+
+  late GoogleMapController mapController;
+  late LatLng _selectedLocation;
+
+  final LatLng kathmandu = LatLng(27.7172, 85.3240); // Kathmandu
+  final LatLng lalitpur = LatLng(27.5662, 85.3240); // Lalitpur
+  final LatLng bhaktapur = LatLng(27.6755, 85.4270); // Bhaktapur
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedLocation = kathmandu; // Default to Kathmandu coordinates
+  }
 
   String? _validateAddress(String? value) {
     if (value == null || value.isEmpty) {
@@ -45,49 +62,37 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
     return null;
   }
 
-  // Function to verify the payment with your backend
-  void _verifyPayment(String idx) async {
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
+  void _onCameraMove(CameraPosition position) {
+    setState(() {
+      _selectedLocation = position.target;
+    });
+  }
+
+  Future<void> _setAddressFromMap() async {
     try {
-      final url = Uri.parse('${Config.baseUrl}${Config.verify_payment}');
-      final response = await http.post(
-        url,
-        body: {
-          'token': idx, // pidx received from the Khalti payment callback
-          'amount': (widget.price * 100).toString(), // Expected amount in paisa
-        },
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        _selectedLocation.latitude,
+        _selectedLocation.longitude,
       );
 
-      print('Response Status: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['status'] == 'success') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Payment Verified!')),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content:
-                    Text('Payment Verification Failed: ${data['message']}')),
-          );
-        }
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[0];
+        _addressController.text =
+            '${placemark.name}, ${placemark.locality}, ${placemark.country}';
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to verify payment')),
-        );
+        _addressController.text = 'Address not found';
       }
-    } catch (error) {
-      print('Error during payment verification: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Error occurred during payment verification')),
-      );
+    } catch (e) {
+      print("Error: $e");
+      _addressController.text = 'Error getting address';
     }
   }
 
-  void _initiateKhaltiPayment() {
+  void _initiateKhaltiPayment() async {
     if (_phoneController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter your phone number')),
@@ -95,45 +100,94 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
       return;
     }
 
-    KhaltiScope.of(context).pay(
-      config: PaymentConfig(
-        amount: (widget.price * 100).toInt(),
-        productIdentity: widget.postid,
-        productName: widget.productName,
-      ),
-      preferences: [PaymentPreference.khalti],
-      onSuccess: (paymentData) {
-        print('Payment Successful: ${paymentData.idx}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Payment Successful!')),
-        );
+    final paymentData = {
+      'amount': (widget.price * 100).toInt(),
+      'product_identity': widget.postid,
+      'product_name': widget.productName,
+    };
 
-        // Send the pidx to backend for verification
-        _verifyPayment(paymentData.idx);
-      },
-      onFailure: (error) {
-        print('Payment Failed: ${error.message}');
-        String errorMessage = 'Payment Failed: Unknown Error';
+    try {
+      final response = await http.post(
+        Uri.parse('http://192.168.1.172/myapp_api/verify_payments.php'),
+        body: json.encode(paymentData),
+      );
 
-        // Detailed error messages
-        if (error.message.contains("MPIN")) {
-          errorMessage = 'Invalid MPIN. Please check your MPIN and try again.';
-        } else if (error.message.contains("Phone number")) {
-          errorMessage = 'Phone number is incorrect. Please check your number.';
-        } else if (error.message.contains("network")) {
-          errorMessage =
-              'Network error. Please check your internet connection.';
-        } else if (error.message.contains("transaction")) {
-          errorMessage = 'Transaction failed. Please try again later.';
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        if (responseData['error'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${responseData['error']}')),
+          );
         } else {
-          errorMessage = 'Payment Failed: ${error.message}';
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Payment Verified! Redirecting...')),
+          );
+          launchKhaltiPayment();
         }
-
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
+          SnackBar(
+              content: Text('Payment request failed: ${response.statusCode}')),
         );
-      },
-    );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $error')),
+      );
+    }
+  }
+
+  void launchKhaltiPayment() async {
+    final url = 'https://www.khalti.com'; // Replace with the Khalti payment URL
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not open the payment page';
+    }
+  }
+
+  void _handleCodPurchase() async {
+    final purchaseData = {
+      'postid': widget.postid,
+      'price': widget.price,
+      'product_name': widget.productName,
+      'address': _addressController.text,
+      'phone': _phoneController.text,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Config.baseUrl}${Config.codpurches}'),
+        body: json.encode(purchaseData),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        if (responseData['success']) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Purchase confirmed with Cash on Delivery!')),
+          );
+
+          // After successful purchase, navigate to the home page
+          Navigator.pop(context); // Pop to the previous page
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${responseData['message']}')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Request failed: ${response.statusCode}')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $error')),
+      );
+    }
   }
 
   @override
@@ -174,24 +228,79 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
                 style: TextStyle(fontSize: 18, color: Colors.deepPurple),
               ),
               const SizedBox(height: 8),
-              TextFormField(
-                controller: _addressController,
-                decoration: InputDecoration(
-                  hintText: 'Your Address',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+              Row(
+                children: [
+                  const Text('Enter Address Manually'),
+                  Checkbox(
+                    value: !isMapSelected,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isMapSelected = !value!;
+                      });
+                    },
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        const BorderSide(color: Colors.deepPurple, width: 2),
+                  const Text('Select Address from Map'),
+                  Checkbox(
+                    value: isMapSelected,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isMapSelected = value!;
+                      });
+                    },
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0),
-                ),
-                maxLines: 3,
-                validator: _validateAddress,
+                ],
               ),
+
+              if (!isMapSelected) ...[
+                TextFormField(
+                  controller: _addressController,
+                  decoration: InputDecoration(
+                    hintText: 'Your Address',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide:
+                          const BorderSide(color: Colors.deepPurple, width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 16.0),
+                  ),
+                  maxLines: 3,
+                  validator: _validateAddress,
+                ),
+              ] else ...[
+                const Text(
+                  'Select Your Address on the Map:',
+                  style: TextStyle(fontSize: 18, color: Colors.deepPurple),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 250,
+                  child: GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: kathmandu,
+                      zoom: 12,
+                    ),
+                    onCameraMove: _onCameraMove,
+                    markers: {
+                      Marker(
+                        markerId: MarkerId('selected-location'),
+                        position: _selectedLocation,
+                        infoWindow: InfoWindow(title: 'Selected Location'),
+                      ),
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: _setAddressFromMap,
+                  child: const Text('Set Address From Map'),
+                ),
+              ],
+
               const SizedBox(height: 20),
 
               // Phone number field
@@ -216,21 +325,25 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
                   contentPadding: const EdgeInsets.symmetric(
                       vertical: 12.0, horizontal: 16.0),
                 ),
-                maxLength: 15,
+                maxLength: 10,
                 validator: _validatePhone,
               ),
               const SizedBox(height: 20),
 
-              // Khalti Image for payment with tick functionality
+              // Payment method selection
               const Text(
                 'Choose Your Payment Method:',
                 style: TextStyle(fontSize: 18, color: Colors.deepPurple),
               ),
               const SizedBox(height: 10),
+
               GestureDetector(
                 onTap: () {
                   setState(() {
                     isKhaltiSelected = !isKhaltiSelected;
+                    if (isKhaltiSelected) {
+                      isCodSelected = false;
+                    }
                   });
                 },
                 child: Container(
@@ -266,15 +379,64 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
               ),
               const SizedBox(height: 20),
 
+              // Cash on Delivery option
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isCodSelected = !isCodSelected;
+                    if (isCodSelected) {
+                      isKhaltiSelected = false;
+                    }
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  width: MediaQuery.of(context).size.width,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: isCodSelected ? Colors.deepPurple : Colors.grey,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Stack(
+                    children: [
+                      const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.attach_money,
+                              size: 40, color: Colors.green),
+                          Text('Cash on Delivery'),
+                        ],
+                      ),
+                      if (isCodSelected)
+                        const Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 30,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+
               // Confirm Purchase button
               GestureDetector(
                 onTap: () {
                   if (_formKey.currentState?.validate() ?? false) {
                     if (isKhaltiSelected) {
                       _initiateKhaltiPayment();
+                    } else if (isCodSelected) {
+                      _handleCodPurchase();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please select Khalti')),
+                        const SnackBar(
+                            content: Text('Please select a payment method')),
                       );
                     }
                   }
