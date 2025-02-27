@@ -115,10 +115,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start, // Align left
                   children: [
-                    _buildIconTextButton(Icons.edit, 'Edit Profile', () {
-                      print(
-                          "Edit Profile tapped!"); // Handle edit profile button tap
-                    }),
+                    //_buildIconTextButton(Icons.edit, 'Edit Profile', () {
+                    //  print(
+                    //      "Edit Profile tapped!"); // Handle edit profile button tap
+                    //}),
                     const SizedBox(height: 10),
                     _buildIconTextButton(Icons.logout, 'Logout', () {
                       _logout(context); // Call logout function

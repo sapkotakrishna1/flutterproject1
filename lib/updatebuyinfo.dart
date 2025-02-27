@@ -11,6 +11,8 @@ class UpdateBuyInfoPage extends StatefulWidget {
   final double price;
   final String postid;
   final String username;
+  final String email;
+  final dynamic post;
 
   const UpdateBuyInfoPage({
     Key? key,
@@ -18,6 +20,8 @@ class UpdateBuyInfoPage extends StatefulWidget {
     required this.price,
     required this.postid,
     required this.username,
+    required this.email,
+    required this.post,
   }) : super(key: key);
 
   @override
@@ -41,6 +45,8 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
 
   @override
   void initState() {
+    //String postEmail =
+    //    widget.post['email'] ?? ''; // Safely handle null post email
     super.initState();
     _selectedLocation = kathmandu; // Default to Kathmandu coordinates
   }
@@ -101,14 +107,16 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
     }
 
     final paymentData = {
-      'amount': (widget.price * 100).toInt(),
+      'amount': (widget.price * 100).toInt(), // Convert price to paisa
       'product_identity': widget.postid,
       'product_name': widget.productName,
+      'user_phone': _phoneController.text, // Send the user's phone number
     };
 
     try {
       final response = await http.post(
         Uri.parse('http://192.168.1.172/myapp_api/verify_payments.php'),
+        headers: {'Content-Type': 'application/json'},
         body: json.encode(paymentData),
       );
 
@@ -123,7 +131,11 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Payment Verified! Redirecting...')),
           );
-          launchKhaltiPayment();
+
+          // Assuming the backend returns a payment URL
+          String paymentUrl = responseData[
+              'https://dev.khalti.com/api/v2/epayment/initiate/']; // Replace with actual key
+          launchKhaltiPayment(paymentUrl); // Call method to launch payment page
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -138,10 +150,9 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
     }
   }
 
-  void launchKhaltiPayment() async {
-    final url = 'https://www.khalti.com'; // Replace with the Khalti payment URL
-    if (await canLaunch(url)) {
-      await launch(url);
+  void launchKhaltiPayment(String paymentUrl) async {
+    if (await canLaunch(paymentUrl)) {
+      await launch(paymentUrl);
     } else {
       throw 'Could not open the payment page';
     }
@@ -154,9 +165,11 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
       'product_name': widget.productName,
       'address': _addressController.text,
       'phone': _phoneController.text,
+      'email': widget.post['email'], // Post owner's email
     };
 
     try {
+      // Make the initial purchase request to confirm the purchase
       final response = await http.post(
         Uri.parse('${Config.baseUrl}${Config.codpurches}'),
         body: json.encode(purchaseData),
@@ -168,11 +181,15 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
         if (responseData['success']) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('Purchase confirmed with Cash on Delivery!')),
+              content: Text('Purchase confirmed with Cash on Delivery!'),
+            ),
           );
 
-          // After successful purchase, navigate to the home page
-          Navigator.pop(context); // Pop to the previous page
+          // Navigate back after email is sent
+          Navigator.pop(context);
+
+          // Send email to the post owner after successful purchase
+          await _sendConfirmationEmail(purchaseData);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: ${responseData['message']}')),
@@ -187,6 +204,39 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $error')),
       );
+    }
+  }
+
+// Function to send a confirmation email to the post owner
+  Future<void> _sendConfirmationEmail(Map<String, dynamic> purchaseData) async {
+    try {
+      final emailData = {
+        'postid': purchaseData['postid'],
+        'product_name': purchaseData['product_name'],
+        'price': purchaseData['price'],
+        'address': purchaseData['address'],
+        'phone': purchaseData['phone'],
+        'email': purchaseData['email'], // Post owner's email
+      };
+
+      final emailResponse = await http.post(
+        Uri.parse(
+            '${Config.baseUrl}${Config.codpurchesemail}'), // Your email endpoint
+        body: json.encode(emailData),
+      );
+
+      if (emailResponse.statusCode == 200) {
+        final emailResponseData = json.decode(emailResponse.body);
+        if (emailResponseData['success']) {
+          print('Email sent successfully!');
+        } else {
+          print('Error: ${emailResponseData['message']}');
+        }
+      } else {
+        print('Email request failed: ${emailResponse.statusCode}');
+      }
+    } catch (error) {
+      print('Error sending email: $error');
     }
   }
 
@@ -208,6 +258,11 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
                 'Post ID: ${widget.postid}',
                 style: const TextStyle(fontSize: 22, color: Colors.black),
               ),
+              Text(
+                'email: ${widget.post['email']} ',
+                style: const TextStyle(fontSize: 22, color: Colors.black),
+              ),
+
               Text(
                 'Product: ${widget.productName}',
                 style: const TextStyle(
@@ -337,46 +392,46 @@ class _UpdateBuyInfoPageState extends State<UpdateBuyInfoPage> {
               ),
               const SizedBox(height: 10),
 
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isKhaltiSelected = !isKhaltiSelected;
-                    if (isKhaltiSelected) {
-                      isCodSelected = false;
-                    }
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: isKhaltiSelected
-                        ? Border.all(color: Colors.deepPurple, width: 3)
-                        : Border.all(color: Colors.grey, width: 2),
-                  ),
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Image.asset(
-                          'assets/khalti.png',
-                          width: 200,
-                          height: 50,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      if (isKhaltiSelected)
-                        const Positioned(
-                          right: 0,
-                          top: 0,
-                          child: Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 30,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
+              //GestureDetector(
+              //  onTap: () {
+              //    setState(() {
+              //      isKhaltiSelected = !isKhaltiSelected;
+              //      if (isKhaltiSelected) {
+              //        isCodSelected = false;
+              //      }
+              //    });
+              //  },
+              //  child: Container(
+              //    decoration: BoxDecoration(
+              //      borderRadius: BorderRadius.circular(8),
+              //      border: isKhaltiSelected
+              //          ? Border.all(color: Colors.deepPurple, width: 3)
+              //          : Border.all(color: Colors.grey, width: 2),
+              //    ),
+              //    child: Stack(
+              //      children: [
+              //        Center(
+              //          child: Image.asset(
+              //            'assets/khalti.png',
+              //            width: 200,
+              //            height: 50,
+              //            fit: BoxFit.contain,
+              //          ),
+              //        ),
+              //        if (isKhaltiSelected)
+              //          const Positioned(
+              //            right: 0,
+              //            top: 0,
+              //            child: Icon(
+              //              Icons.check_circle,
+              //              color: Colors.green,
+              //              size: 30,
+              //            ),
+              //          ),
+              //      ],
+              //    ),
+              //  ),
+              //),
               const SizedBox(height: 20),
 
               // Cash on Delivery option

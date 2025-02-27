@@ -595,6 +595,8 @@ class _BuyPageState extends State<BuyPage> {
           price: price,
           postid: postid,
           username: username,
+          email: widget.email,
+          post: widget.post,
         ),
       ),
     );

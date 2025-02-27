@@ -125,7 +125,9 @@ class _AddObjPageState extends State<AddObjPage> {
       Uri.parse(
           '${Config.baseUrl}${Config.addobj}'), // Replace with your PHP logout API URL
     );
-    request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    // Set content-type to multipart/form-data for uploading files
+    request.headers['Content-Type'] = 'multipart/form-data';
+    //request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
     // Add fields to the request
     request.fields['name'] = _nameController.text;

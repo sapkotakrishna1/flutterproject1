@@ -3,7 +3,7 @@ class Config {
   // Define a base URL. You can modify it based on your environment (e.g., dev, prod)
   static String get baseUrl {
     // Modify this logic based on your actual environment switch
-    return 'http://172.22.160.1/myapp_api/'; // Local/Development environment    // For production, you can change to a different URL
+    return 'http://172.16.2.32/myapp_api/'; // Local/Development environment    // For production, you can change to a different URL
     // return 'https://yourproductionserver.com/myapp_api/';
   }
 
@@ -24,6 +24,7 @@ class Config {
   static const String fetchreplycomment = 'fetchreplycomment.php';
   static const String verify_payment = 'verify_payments.php';
   static const String codpurches = 'codpurches.php';
+  static const String codpurchesemail = 'codpurchesemail.php';
   static const String fetchcodpurches = 'fetchcodpurches.php';
   static const String delete = 'delete.php';
   static const String userdeletedata = 'userdeletedata.php';
