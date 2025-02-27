@@ -1,9 +1,8 @@
 <?php
-// Allow the request to come from any origin
-header('Access-Control-Allow-Origin: *'); // This allows cross-origin requests
+header("Access-Control-Allow-Origin: *"); // Allow all origins or specify your mobile app's origin
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// Set the response content type to JSON
-header('Content-Type: application/json');
 
 // Enable error reporting
 error_reporting(E_ALL);
