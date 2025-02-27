@@ -46,9 +46,13 @@ dependencies:
   http_parser: ^4.0.1
   path: ^1.9.0
   font_awesome_flutter: ^10.1.0
+  
 
   flutter_localizations:
     sdk: flutter  # This will ensure that localization support is included
+  google_maps_flutter: ^2.10.0
+  geocoding: ^3.0.0
+  webview_flutter: ^2.0.10
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +83,8 @@ flutter:
     - assets/logorestore.png
     - assets/image.jpg
     - assets/image.webp
+
+ 
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
